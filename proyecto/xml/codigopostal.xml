@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <geonames>
     <entry>
-        <lang>en</lang>
-        <title>Historical Military Museum of Cartagena (Spain)</title>
-        <summary>The Museo Histórico Militar de Cartagena (Historical Military Museum of Cartagena) is a military museum dedicated to Spanish Army History, and is located in Cartagena, Spain  (...)</summary>
+        <lang>es</lang>
+        <title>Museo Arqueológico de Murcia</title>
+        <summary>El Museo Arqueológico de Murcia se halla en la ciudad del mismo nombre, en la Región de Murcia (España). Tiene su origen en el antiguo Museo Provincial que fue creado por Real Orden del Ministerio de Fomento el 6 de julio de 1864 gracias a las aportaciones de la Comisión Provincial de Monumentos (...)</summary>
         <feature/>
         <countryCode>ES</countryCode>
-        <elevation>6</elevation>
-        <lat>37.6046</lat>
-        <lng>-0.9854</lng>
-        <wikipediaUrl>https://en.wikipedia.org/wiki/Historical_Military_Museum_of_Cartagena_%28Spain%29</wikipediaUrl>
-        <thumbnailImg/>
-        <rank>90</rank>
-        <distance>0.0942</distance>
-    </entry>
-    <entry>
-        <lang>en</lang>
-        <title>Battle of Cartagena (1643)</title>
-        <summary>The Battle of Cartagena was a naval battle fought on September 3, 1643 during the Thirty Years' War off Cape de Gate near Cartagena, Spain. After a series of victories in 1641 and 1642 the French Navy dominated the Western Mediterranean Sea (...)</summary>
-        <feature/>
-        <countryCode>ES</countryCode>
-        <elevation>26</elevation>
-        <lat>37.6</lat>
-        <lng>-0.9833</lng>
-        <wikipediaUrl>https://en.wikipedia.org/wiki/Battle_of_Cartagena_%281643%29</wikipediaUrl>
-        <thumbnailImg/>
-        <rank>83</rank>
-        <distance>0.6252</distance>
-    </entry>
-    <entry>
-        <lang>en</lang>
-        <title>Battle of Cartagena (1758)</title>
-        <summary>The Battle of Cartagena took place on 28 February 1758 off the Spanish port of Cartagena during the Seven Years' War. A British fleet under Henry Osborn, which had blockaded a French fleet in Cartagena, attacked and defeated a French force under Michel-Ange Duquesne de Menneville coming to their (...)</summary>
-        <feature/>
-        <countryCode>ES</countryCode>
-        <elevation>26</elevation>
-        <lat>37.6</lat>
-        <lng>-0.9833</lng>
-        <wikipediaUrl>https://en.wikipedia.org/wiki/Battle_of_Cartagena_%281758%29</wikipediaUrl>
-        <thumbnailImg/>
-        <rank>89</rank>
-        <distance>0.6252</distance>
-    </entry>
-    <entry>
-        <lang>en</lang>
-        <title>Roman theatre, Cartagena</title>
-        <summary>The Roman Theatre is an ancient Roman theatre in Cartagena, Spain.  (...)</summary>
-        <feature>landmark</feature>
-        <countryCode>ES</countryCode>
-        <elevation>21</elevation>
-        <lat>37.5994</lat>
-        <lng>-0.9841</lng>
-        <wikipediaUrl>https://en.wikipedia.org/wiki/Roman_theatre%2C_Cartagena</wikipediaUrl>
+        <elevation>53</elevation>
+        <lat>37.9867</lat>
+        <lng>-1.1309</lng>
+        <wikipediaUrl>https://es.wikipedia.org/wiki/Museo_Arqueol%C3%B3gico_de_Murcia</wikipediaUrl>
         <thumbnailImg/>
         <rank>92</rank>
-        <distance>0.6624</distance>
+        <distance>0.08</distance>
     </entry>
     <entry>
-        <lang>en</lang>
-        <title>Cartagena Cathedral</title>
-        <summary>The Cathedral of Cartagena in Spain, or the Cathedral of Santa María la Vieja, was a cathedral of the Diocese of Cartagena, located on the hill of La Concepción in the old town of Cartagena. It has been in ruins since 1939, when it was destroyed when Cartagena was shelled in the Spanish Civil War by (...)</summary>
+        <lang>es</lang>
+        <title>Copa Mundial de fútbol sala de la FIFA 1996</title>
+        <summary>La III Copa Mundial de fútbol sala de la FIFA de 1996 tuvo lugar en España. Fue la tercera edición de este campeonato mundial. La sedes escogidas fueron Murcia, Segovia, Castellón de la Plana y Barcelona, disputándose la final en el Palau Sant Jordi de la Ciudad Condal (...)</summary>
+        <feature/>
+        <countryCode/>
+        <elevation>59</elevation>
+        <lat>37.9861</lat>
+        <lng>-1.1303</lng>
+        <wikipediaUrl>https://es.wikipedia.org/wiki/Copa_Mundial_de_f%C3%BAtbol_sala_de_la_FIFA_1996</wikipediaUrl>
+        <thumbnailImg/>
+        <rank>90</rank>
+        <distance>0.1055</distance>
+    </entry>
+    <entry>
+        <lang>es</lang>
+        <title>Catedral de Murcia</title>
+        <summary>La Santa Iglesia Catedral de Santa María, conocida como Catedral de Murcia, es el templo principal y sede de la Diócesis de Cartagena. Se encuentra en pleno casco antiguo de la ciudad de Murcia, en la Plaza del Cardenal Belluga (...)</summary>
         <feature>landmark</feature>
         <countryCode>ES</countryCode>
-        <elevation>13</elevation>
-        <lat>37.5992</lat>
-        <lng>-0.9846</lng>
-        <wikipediaUrl>https://en.wikipedia.org/wiki/Cartagena_Cathedral</wikipediaUrl>
+        <elevation>57</elevation>
+        <lat>37.9838</lat>
+        <lng>-1.1283</lng>
+        <wikipediaUrl>https://es.wikipedia.org/wiki/Catedral_de_Murcia</wikipediaUrl>
         <thumbnailImg/>
-        <rank>91</rank>
-        <distance>0.6739</distance>
+        <rank>99</rank>
+        <distance>0.3914</distance>
+    </entry>
+    <entry>
+        <lang>es</lang>
+        <title>Diócesis de Cartagena</title>
+        <summary>La diócesis de Cartagena es una sede episcopal dependiente de la archidiócesis de Granada, en España. Su sede es la catedral de Santa María, situada en la ciudad de Murcia.  (...)</summary>
+        <feature/>
+        <countryCode/>
+        <elevation>57</elevation>
+        <lat>37.9838</lat>
+        <lng>-1.1283</lng>
+        <wikipediaUrl>https://es.wikipedia.org/wiki/Di%C3%B3cesis_de_Cartagena</wikipediaUrl>
+        <thumbnailImg/>
+        <rank>99</rank>
+        <distance>0.3914</distance>
+    </entry>
+    <entry>
+        <lang>es</lang>
+        <title>Iglesia de Nuestra Señora de los Dolores (Aljucer)</title>
+        <summary>La iglesia Nuestra Señora de los Dolores de Aljucer (anteriormente iglesia san Lazaro es una iglesia parroquial situada en la plaza Presbítero Juan Sáez Hurtado junto a la acequia Alquiblaen la pedanía de Aljucer Murcia (Región de Murcia, España), el edificio actual data de la primera mitad del (...)</summary>
+        <feature>landmark</feature>
+        <countryCode>ES</countryCode>
+        <elevation>55</elevation>
+        <lat>37.9856</lat>
+        <lng>-1.1348</lng>
+        <wikipediaUrl>https://es.wikipedia.org/wiki/Iglesia_de_Nuestra_Se%C3%B1ora_de_los_Dolores_%28Aljucer%29</wikipediaUrl>
+        <thumbnailImg/>
+        <rank>41</rank>
+        <distance>0.4448</distance>
     </entry>
 </geonames>

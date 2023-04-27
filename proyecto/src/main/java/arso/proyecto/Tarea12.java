@@ -1,7 +1,9 @@
 package arso.proyecto;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -44,72 +46,91 @@ public class Tarea12 {
 		DocumentBuilder analizador = factoria.newDocumentBuilder();
 		// 3. Analizar el documento
 		String API = "http://api.geonames.org/findNearbyWikipedia?";
-		String parameters = "lang=es&postalcode=" + codigoPostal + "&country=" + codigoPais + "&radius=10&username=arso";
+		String parameters = "lang=es&postalcode=" + codigoPostal + "&country=" + codigoPais
+				+ "&radius=10&username=arso";
 		URL url = new URL(API + parameters);
 		Document documento = analizador.parse(url.openStream());
-		
+
 		System.out.println("--             Tarea 1             --");
-		consultarTitulos(documento);
-		
-//		// 1. Construye la factoría de transformación y obtiene un transformador
-//		TransformerFactory tFactoria = TransformerFactory.newInstance();
-//		Transformer transformacion = tFactoria.newTransformer();
-//		// 2. Establece la entrada, como un árbol DOM
-//		Source input = new DOMSource(documento);
-//		// 3. Establece la salida, un fichero en disco
-//		File fichero = new File("xml/codigopostal.xml");
-//		Result output = new StreamResult(fichero);
-//		// 4. Aplica la transformación
-//		transformacion.transform(input, output);
-		
+		List<String> titulos = consultarTitulos(documento);
+
 		System.out.println();
-		
-//		System.out.println("--             Tarea 2             --");
-//		List<String> urlDBPedia = obtenerURLDBPedia(documento);
-//		urlDBPedia.stream().forEach(u -> System.out.println(u));
-//		
-//		for(int i=0; i<urlDBPedia.size(); i++) {
-//			URL urlJson = new URL(urlDBPedia.get(i));
-//			downloadFile(urlJson, "json/aux"+i+".json");
-//			InputStreamReader fuente = new FileReader("json/aux"+i+".json"); 
-//			JsonReader jsonReader = Json.createReader(fuente);
-//			JsonObject obj = jsonReader.readObject();
-//			JsonArray resumen = obj.getJsonArray("http://dbpedia.org/ontology/abstract");
-//			System.out.println(resumen); 
-//			for (JsonObject valor : resumen.getValuesAs(JsonObject.class)) { 
-//	        	
-//	          	if (valor.containsKey("value"))
-//	                System.out.println("Value: " + valor.getString("value"));
-//
-//	        }
-//		}
+
+		System.out.println("--             Tarea 2             --");
+		for (int i = 0; i < titulos.size(); i++) {
+			titulos.set(i, titulos.get(i).replace(" ", "_"));
+		}
+		titulos.stream().forEach(u -> System.out.println(u));
+
+		for (String URL : titulos) {
+			System.out.println(URL);
+			try {
+				URL urlJson = new URL("https://es.dbpedia.org/data/" + URL + ".json");
+				InputStreamReader reader = new InputStreamReader(urlJson.openStream());
+				JsonReader jsonReader = Json.createReader(reader);
+				// Creo un objeto JsonObject a partir del contenido de la URL
+				JsonObject obj = jsonReader.readObject();
+				JsonObject resourceObject = obj.getJsonObject("http://es.dbpedia.org/resource/" + URL);
+				// Acceder a la propiedad deseada utilizando su clave
+				JsonArray array = resourceObject.getJsonArray("http://dbpedia.org/ontology/abstract");
+				String value;
+				if (array != null) {
+					JsonObject abstractObject = array.getJsonObject(0);
+					value = abstractObject.getString("value");
+					System.out.println("Resumen: " + value);
+				} else {
+					System.out.println("No hay resumen");
+				}
+
+				array = resourceObject.getJsonArray("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+				if (array != null) {
+					for (JsonObject categoria : array.getValuesAs(JsonObject.class)) {
+						value = categoria.getString("value");
+						System.out.println("Categoria: " + value);
+					}
+				} else {
+					System.out.println("No hay categorías");
+				}
+
+				array = resourceObject.getJsonArray("http://dbpedia.org/ontology/wikiPageExternalLink");
+				if (array != null) {
+					for (JsonObject enlace : array.getValuesAs(JsonObject.class)) {
+						value = enlace.getString("value");
+						System.out.println("Enlace: " + value);
+					}
+				} else {
+					System.out.println("No hay enlaces");
+				}
+				
+				array = resourceObject.getJsonArray("http://es.dbpedia.org/property/imagen");
+				if (array != null) {
+					for (JsonObject imagen : array.getValuesAs(JsonObject.class)) {
+						value = imagen.getString("value");
+						System.out.println("Imagen: " + value);
+					}
+				} else {
+					System.out.println("No hay imágenes");
+				}
+
+			} catch (IOException e) {
+				System.err.println("Error al leer el archivo JSON: " + e.getMessage());
+			}
+			System.out.println();
+		}
 	}
 
-	
-	public static void consultarTitulos(Document documento) {
+	public static List<String> consultarTitulos(Document documento) {
+		LinkedList<String> titulosString = new LinkedList<>();
 		NodeList elementos = documento.getElementsByTagName("entry");
-		for (int i = 0; i < elementos.getLength() ; i++) {
+		for (int i = 0; i < elementos.getLength(); i++) {
 			Element elemento = (Element) elementos.item(i);
 			NodeList titulos = elemento.getElementsByTagName("title");
 			Element titulo = (Element) titulos.item(0);
 			String tituloString = titulo.getTextContent();
 			System.out.println(tituloString);
+			titulosString.add(tituloString);
 		}
-	}
-	
-	public static List<String> obtenerURLDBPedia(Document documento) {
-		LinkedList<String> URLDBPedia = new LinkedList<>();
-		String urlDefecto = "https://es.dbpedia.org/data/";
-		NodeList elementos = documento.getElementsByTagName("entry");
-		for (int i = 0; i < elementos.getLength() ; i++) {
-			Element elemento = (Element) elementos.item(i);
-			NodeList urls = elemento.getElementsByTagName("wikipediaUrl");
-			Element url = (Element) urls.item(0);
-			String urlString = url.getTextContent();
-			String[] split = urlString.split("https://es.wikipedia.org/wiki/"); 
-			URLDBPedia.add(urlDefecto + split[1]+".json");
-		}
-		return URLDBPedia;
+		return titulosString;
 	}
 
 }

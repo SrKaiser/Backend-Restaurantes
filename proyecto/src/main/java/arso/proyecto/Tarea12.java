@@ -24,18 +24,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+//Scanner sc = new Scanner(System.in);
+//System.out.print("Introduzca un código de país: ");
+//codigoPais = sc.nextLine();
+//System.out.print("Introduzca un código postal: ");
+//codigoPostal = sc.nextLine();
+//sc.close();
+
 public class Tarea12 {
 
 	public static void main(String[] args) throws Exception {
 		String codigoPostal, codigoPais;
 		codigoPostal = "30001";
 		codigoPais = "ES";
-//		Scanner sc = new Scanner(System.in);
-//		System.out.print("Introduzca un código de país: ");
-//		codigoPais = sc.nextLine();
-//		System.out.print("Introduzca un código postal: ");
-//		codigoPostal = sc.nextLine();
-//		sc.close();
 
 		// 1. Obtener una factoría
 		DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
@@ -45,8 +46,7 @@ public class Tarea12 {
 		String API = "http://api.geonames.org/findNearbyWikipedia?";
 		String parameters = "lang=es&postalcode=" + codigoPostal + "&country=" + codigoPais + "&radius=10&username=arso";
 		URL url = new URL(API + parameters);
-		downloadFile(url, "xml/codigopostal.xml");
-		Document documento = analizador.parse("xml/codigopostal.xml");
+		Document documento = analizador.parse(url.openStream());
 		
 		System.out.println("--             Tarea 1             --");
 		consultarTitulos(documento);
@@ -64,37 +64,27 @@ public class Tarea12 {
 		
 		System.out.println();
 		
-		System.out.println("--             Tarea 2             --");
-		List<String> urlDBPedia = obtenerURLDBPedia(documento);
-		urlDBPedia.stream().forEach(u -> System.out.println(u));
-		
-		for(int i=0; i<urlDBPedia.size(); i++) {
-			URL urlJson = new URL(urlDBPedia.get(i));
-			downloadFile(urlJson, "json/aux"+i+".json");
-			InputStreamReader fuente = new FileReader("json/aux"+i+".json"); 
-			JsonReader jsonReader = Json.createReader(fuente);
-			JsonObject obj = jsonReader.readObject();
-			JsonArray resumen = obj.getJsonArray("http://dbpedia.org/ontology/abstract");
-			System.out.println(resumen); 
-			for (JsonObject valor : resumen.getValuesAs(JsonObject.class)) { 
-	        	
-	          	if (valor.containsKey("value"))
-	                System.out.println("Value: " + valor.getString("value"));
-
-	        }
-		}
+//		System.out.println("--             Tarea 2             --");
+//		List<String> urlDBPedia = obtenerURLDBPedia(documento);
+//		urlDBPedia.stream().forEach(u -> System.out.println(u));
+//		
+//		for(int i=0; i<urlDBPedia.size(); i++) {
+//			URL urlJson = new URL(urlDBPedia.get(i));
+//			downloadFile(urlJson, "json/aux"+i+".json");
+//			InputStreamReader fuente = new FileReader("json/aux"+i+".json"); 
+//			JsonReader jsonReader = Json.createReader(fuente);
+//			JsonObject obj = jsonReader.readObject();
+//			JsonArray resumen = obj.getJsonArray("http://dbpedia.org/ontology/abstract");
+//			System.out.println(resumen); 
+//			for (JsonObject valor : resumen.getValuesAs(JsonObject.class)) { 
+//	        	
+//	          	if (valor.containsKey("value"))
+//	                System.out.println("Value: " + valor.getString("value"));
+//
+//	        }
+//		}
 	}
 
-	public static void downloadFile(URL url, String fileName) throws Exception {
-		File archivo = new File(fileName);
-		if (archivo.exists()) {
-		    archivo.delete();
-		}
-
-		try (InputStream in = url.openStream()) {
-			Files.copy(in, Paths.get(fileName));
-		}
-	}
 	
 	public static void consultarTitulos(Document documento) {
 		NodeList elementos = documento.getElementsByTagName("entry");

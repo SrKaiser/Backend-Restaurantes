@@ -25,9 +25,10 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
     }
 
 	@Override
-	public String insert(String nombre, String coordenadas) {
+	public String insert(String nombre, double latitud, double longitud) {
 	 Document doc = new Document("nombre", nombre)
-                .append("coordenadas", coordenadas);
+                .append("latitud", latitud)
+                .append("longitud", longitud);
         restauranteCollection.insertOne(doc);
         ObjectId id = doc.getObjectId("_id");
         return id.toHexString();
@@ -35,24 +36,25 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
 	}
 	
 	@Override
-    public boolean update(String id, String nombre, String coordenadas) {
+    public boolean update(String idRestaurante, String nombre, double latitud, double longitud) {
         ObjectId objectId;
         try {
-            objectId = new ObjectId(id);
+            objectId = new ObjectId(idRestaurante);
         } catch (IllegalArgumentException e) {
             return false;
         }
 
-        long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("nombre", nombre), Updates.set("coordenadas", coordenadas))).getModifiedCount();
+        long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("nombre", nombre), Updates.set("latitud", latitud), Updates.set("longitud", longitud))).getModifiedCount();
         return updatedCount > 0;
     }
 	
 	@Override
     public List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) {
 		ServicioSitiosTuristicos servSitiosTuristicos = new ServicioSitiosTuristicos();
+		Restaurante r = getCoordenadas(idRestaurante);
         List<SitioTuristico> listaSitiosTuristicos = new LinkedList<>();
 		try {
-			listaSitiosTuristicos = servSitiosTuristicos.obtenerSitios();
+			listaSitiosTuristicos = servSitiosTuristicos.obtenerSitios(r.getLatitud(), r.getLongitud());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -60,11 +62,32 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
         return listaSitiosTuristicos;
     }
 	
+    private Restaurante getCoordenadas(String idRestaurante) {
+        ObjectId objectId;
+        try {
+            objectId = new ObjectId(idRestaurante);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
+        Document doc = restauranteCollection.find(Filters.eq("_id", objectId)).first();
+        if (doc == null) {
+            return null;
+        }
+
+        Restaurante restaurante = new Restaurante();
+        restaurante.setLatitud(doc.getDouble("latitud"));
+        restaurante.setLongitud(doc.getDouble("longitud"));
+ 
+        return restaurante;
+    }
+	
 	@Override
     public boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) {
 		ObjectId objectId = new ObjectId(idRestaurante);
         List<Document> sitiosTuristicosDocumentos = sitiosTuristicos.stream()
                 .map(sitioTuristico -> new Document()
+                		.append("titulo", sitioTuristico.getTitulo())
                         .append("resumen", sitioTuristico.getResumen())
                         .append("categorias", sitioTuristico.getCategorias())
                         .append("enlaces", sitioTuristico.getEnlaces())
@@ -131,6 +154,7 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
     }
 	
 	@Override
+    @SuppressWarnings("unchecked")
     public Restaurante findById(String idRestaurante) {
         ObjectId objectId;
         try {
@@ -147,9 +171,38 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
         Restaurante restaurante = new Restaurante();
         restaurante.setId(doc.getObjectId("_id").toString());
         restaurante.setNombre(doc.getString("nombre"));
-        restaurante.setCoordenadas(doc.getString("coordenadas"));
+        restaurante.setLatitud(doc.getDouble("latitud"));
+        restaurante.setLongitud(doc.getDouble("longitud"));
         // TODO Obtener los platos y sitios turisticos?
-
+      
+        List<Plato> platos = new ArrayList<>();
+		List<Document> platosDocs = (List<Document>) doc.get("platos");
+        if (platosDocs != null) {
+            for (Document platoDoc : platosDocs) {
+                Plato plato = new Plato();
+                plato.setNombre(platoDoc.getString("nombre"));
+                plato.setDescripcion(platoDoc.getString("descripcion"));
+                plato.setPrecio(platoDoc.getDouble("precio"));
+                platos.add(plato);
+            }
+        }
+        restaurante.setPlatos(platos);
+        
+        List<SitioTuristico> sitiosTuristicos = new ArrayList<>();
+    
+		List<Document> sitiosTuristicosDocs = (List<Document>) doc.get("sitiosTuristicosDestacados");
+        if (sitiosTuristicosDocs != null) {
+            for (Document sitioTuristicoDoc : sitiosTuristicosDocs) {
+                SitioTuristico sitioTuristico = new SitioTuristico();
+                sitioTuristico.setTitulo(sitioTuristicoDoc.getString("titulo"));
+                sitioTuristico.setResumen(sitioTuristicoDoc.getString("resumen"));
+                sitioTuristico.setCategorias((List<String>) sitioTuristicoDoc.get("categorias"));
+                sitioTuristico.setEnlaces((List<String>) sitioTuristicoDoc.get("enlaces"));
+                sitioTuristico.setImagenes((List<String>) sitioTuristicoDoc.get("imagenes"));
+                sitiosTuristicos.add(sitioTuristico);
+            }
+        }
+        restaurante.setSitiosTuristicos(sitiosTuristicos);
         return restaurante;
     }
 	
@@ -166,16 +219,21 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
 	}
 	
 	@Override
-    public List<Restaurante> findAll() {
-        List<Restaurante> restaurantesList = new ArrayList<>();
+	@SuppressWarnings("unchecked")
+    public List<ResumenRestaurante> findAll() {
+        List<ResumenRestaurante> restaurantesList = new ArrayList<>();
         try (MongoCursor<Document> cursor = restauranteCollection.find().iterator()) {
             while (cursor.hasNext()) {
                 Document doc = cursor.next();
-                Restaurante restaurante = new Restaurante();
+                ResumenRestaurante restaurante = new ResumenRestaurante();
                 restaurante.setId(doc.getObjectId("_id").toString());
                 restaurante.setNombre(doc.getString("nombre"));
-                restaurante.setCoordenadas(doc.getString("coordenadas"));
-                //TODO Platos y sitios turisticos?
+                restaurante.setLatitud(doc.getDouble("latitud"));
+                restaurante.setLongitud(doc.getDouble("longitud"));
+                List<Document> platosDocs = (List<Document>) doc.get("platos");
+                restaurante.setNumeroPlatos(platosDocs.size());
+                List<Document> sitiosTuristicosDocs = (List<Document>) doc.get("sitiosTuristicosDestacados");
+                restaurante.setNumeroSitiosTuristicos(sitiosTuristicosDocs.size());
                 restaurantesList.add(restaurante);
             }
         }

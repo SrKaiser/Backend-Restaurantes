@@ -10,6 +10,8 @@ public class Plato {
 		this.descripcion = descripcion;
 		this.precio = precio;
 	}
+	
+	public Plato() {}
 
 	public String getNombre() {
 		return nombre;
@@ -34,6 +36,13 @@ public class Plato {
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
+
+	@Override
+	public String toString() {
+		return "Plato [nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + "]";
+	}
+	
+	
 	
 	
 	

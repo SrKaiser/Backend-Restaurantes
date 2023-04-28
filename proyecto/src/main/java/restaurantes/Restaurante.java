@@ -6,17 +6,22 @@ import java.util.List;
 public class Restaurante {
 	private String id;
 	private String nombre;
-	private String coordenadas;
+	private double latitud;
+	private double longitud;
 	private List<SitioTuristico> sitiosTuristicos;
+	private List<Plato> platos;
 	
-	public Restaurante(String nombre, String coordenadas) {
+	public Restaurante(String nombre, double latitud, double longitud) {
 		this.nombre = nombre;
-		this.coordenadas = coordenadas;
+		this.latitud = latitud;
+		this.longitud = longitud;
 		this.sitiosTuristicos = new LinkedList<SitioTuristico>();
+		this.platos = new LinkedList<Plato>();
 	}
 	
 	public Restaurante() {
 		this.sitiosTuristicos = new LinkedList<SitioTuristico>();
+		this.platos = new LinkedList<Plato>();
 	}
 
 	public void addSitioTuristico(SitioTuristico sitio) {
@@ -43,16 +48,42 @@ public class Restaurante {
 		this.nombre = nombre;
 	}
 
-	public String getCoordenadas() {
-		return coordenadas;
+	public double getLatitud() {
+		return latitud;
 	}
 
-	public void setCoordenadas(String coordenadas) {
-		this.coordenadas = coordenadas;
+	public void setLatitud(double latitud) {
+		this.latitud = latitud;
+	}
+
+	public double getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(double longitud) {
+		this.longitud = longitud;
+	}
+	
+	public List<SitioTuristico> getSitiosTuristicos() {
+		return sitiosTuristicos;
+	}
+
+	public void setSitiosTuristicos(List<SitioTuristico> sitiosTuristicos) {
+		this.sitiosTuristicos = sitiosTuristicos;
+	}
+
+	public List<Plato> getPlatos() {
+		return platos;
+	}
+
+	public void setPlatos(List<Plato> platos) {
+		this.platos = platos;
 	}
 
 	@Override
 	public String toString() {
-		return "Restaurante [id=" + id + ", nombre=" + nombre + ", coordenadas=" + coordenadas + "]";
-	}	
+		return "Restaurante [id=" + id + ", nombre=" + nombre + ", latitud=" + latitud + ", longitud=" + longitud
+				+ ", sitiosTuristicos=" + sitiosTuristicos + ", platos=" + platos + "]";
+	}
+
 }

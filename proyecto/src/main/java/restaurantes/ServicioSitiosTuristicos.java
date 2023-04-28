@@ -19,8 +19,8 @@ import org.w3c.dom.NodeList;
 
 public class ServicioSitiosTuristicos {
 	
-	public List<SitioTuristico> obtenerSitios() throws Exception {
-		List<String> titulos = obtenerTitulos();
+	public List<SitioTuristico> obtenerSitios(double latitud, double longitud) throws Exception {
+		List<String> titulos = obtenerTitulos(latitud, longitud);
 		for (int i = 0; i < titulos.size(); i++) {
 			titulos.set(i, titulos.get(i).replace(" ", "_"));
 		}
@@ -80,18 +80,14 @@ public class ServicioSitiosTuristicos {
 		return sitios;
 	}
 	
-	private List<String> obtenerTitulos() throws Exception {
-		String codigoPostal, codigoPais;
-		codigoPostal = "30001";
-		codigoPais = "ES";
-
+	private List<String> obtenerTitulos(double latitud, double longitud) throws Exception {
 		// 1. Obtener una factoría
 		DocumentBuilderFactory factoria = DocumentBuilderFactory.newInstance();
 		// 2. Pedir a la factoría la construcción del analizador
 		DocumentBuilder analizador = factoria.newDocumentBuilder();
 		// 3. Analizar el documento
 		String API = "http://api.geonames.org/findNearbyWikipedia?";
-		String parameters = "lang=es&postalcode=" + codigoPostal + "&country=" + codigoPais
+		String parameters = "lang=es&lat=" + latitud + "&lng=" + longitud
 				+ "&radius=10&username=arso";
 		URL url = new URL(API + parameters);
 		Document documento = analizador.parse(url.openStream());
@@ -107,7 +103,6 @@ public class ServicioSitiosTuristicos {
 			NodeList titulos = elemento.getElementsByTagName("title");
 			Element titulo = (Element) titulos.item(0);
 			String tituloString = titulo.getTextContent();
-			System.out.println(tituloString);
 			titulosString.add(tituloString);
 		}
 		return titulosString;

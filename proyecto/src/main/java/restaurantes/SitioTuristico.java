@@ -62,7 +62,7 @@ public class SitioTuristico {
 	}
 	
 	public void addEnlace(String enlace) {
-		categorias.add(enlace);
+		enlaces.add(enlace);
 	}
 	
 	public List<String> getImagenes() {
@@ -74,14 +74,15 @@ public class SitioTuristico {
 	}
 	
 	public void addImagen(String imagen) {
-		categorias.add(imagen);
+		imagenes.add(imagen);
 	}
 
 	@Override
 	public String toString() {
-		return "SitioTuristico [resumen=" + resumen + ", categorias=" + categorias + ", enlaces=" + enlaces
-				+ ", imagenes=" + imagenes + "]";
+		return "SitioTuristico [titulo=" + titulo + ", resumen=" + resumen + ", categorias=" + categorias + ", enlaces="
+				+ enlaces + ", imagenes=" + imagenes + "]";
 	}
+
 	
 	
 	

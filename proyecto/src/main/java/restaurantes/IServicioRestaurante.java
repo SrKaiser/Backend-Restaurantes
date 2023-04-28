@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface IServicioRestaurante {
 	
-	public String altaRestaurante(String nombre, String coordenadas);
+	public String altaRestaurante(String nombre, double latitud, double longitud);
 	
-	boolean actualizarRestaurante(String id, String nombre, String coordenadas);
+	boolean actualizarRestaurante(String id, String nombre, double latitud, double longitud);
 	
 	List<SitioTuristico> obtenerSitiosTuristicosProximos(String idRestaurante);
 	
@@ -22,6 +22,6 @@ public interface IServicioRestaurante {
 	
 	boolean borrarRestaurante(String idRestaurante);
 	
-	List<Restaurante> recuperarTodosRestaurantes();
+	List<ResumenRestaurante> recuperarTodosRestaurantes();
 	
 }

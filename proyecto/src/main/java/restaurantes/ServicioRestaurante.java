@@ -23,13 +23,13 @@ public class ServicioRestaurante implements IServicioRestaurante {
     }
     
     @Override
-    public String altaRestaurante(String nombre, String coordenadas) {
-    	return repositorioRestaurante.insert(nombre, coordenadas);
+    public String altaRestaurante(String nombre, double latitud, double longitud) {
+    	return repositorioRestaurante.insert(nombre, latitud, longitud);
     }
     
     @Override
-    public boolean actualizarRestaurante(String id, String nombre, String coordenadas) {
-        return repositorioRestaurante.update(id, nombre, coordenadas);
+    public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) {
+        return repositorioRestaurante.update(idRestaurante, nombre, latitud, longitud);
     }
     
     @Override
@@ -68,7 +68,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     }
     
     @Override
-    public List<Restaurante> recuperarTodosRestaurantes() {
+    public List<ResumenRestaurante> recuperarTodosRestaurantes() {
         return repositorioRestaurante.findAll();
     }
 

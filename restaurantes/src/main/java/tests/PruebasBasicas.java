@@ -1,4 +1,4 @@
-package lanzador;
+package tests;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import modelos.SitioTuristico;
 import servicios.ServicioRestaurante;
 
 
-public class Lanzador {
+public class PruebasBasicas {
 	public static void main(String[] args) {
 		ServicioRestaurante serv = new ServicioRestaurante();
 		// Prueba de alta de restaurantes

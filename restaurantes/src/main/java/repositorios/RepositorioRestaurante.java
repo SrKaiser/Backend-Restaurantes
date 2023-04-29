@@ -1,4 +1,4 @@
-package restaurantes;
+package repositorios;
 
 
 import java.util.ArrayList;
@@ -15,6 +15,12 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+
+import modelos.Plato;
+import modelos.Restaurante;
+import modelos.ResumenRestaurante;
+import modelos.SitioTuristico;
+import servicios.ServicioSitiosTuristicos;
 
 public class RepositorioRestaurante implements IRepositorioRestaurante{
 

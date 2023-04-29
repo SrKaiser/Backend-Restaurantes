@@ -1,4 +1,4 @@
-package restaurantes;
+package servicios;
 
 import java.util.List;
 
@@ -7,6 +7,12 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+
+import modelos.Plato;
+import modelos.Restaurante;
+import modelos.ResumenRestaurante;
+import modelos.SitioTuristico;
+import repositorios.RepositorioRestaurante;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	

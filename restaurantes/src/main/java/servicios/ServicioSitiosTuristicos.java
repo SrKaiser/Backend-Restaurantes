@@ -1,4 +1,4 @@
-package restaurantes;
+package servicios;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +16,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import modelos.SitioTuristico;
 
 public class ServicioSitiosTuristicos {
 	

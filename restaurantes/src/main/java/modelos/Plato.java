@@ -1,4 +1,4 @@
-package restaurantes;
+package modelos;
 
 public class Plato {
 	private String nombre;

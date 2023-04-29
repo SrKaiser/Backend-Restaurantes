@@ -1,6 +1,11 @@
-package restaurantes;
+package repositorios;
 
 import java.util.List;
+
+import modelos.Plato;
+import modelos.Restaurante;
+import modelos.ResumenRestaurante;
+import modelos.SitioTuristico;
 
 public interface IRepositorioRestaurante {
 	

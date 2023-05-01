@@ -7,6 +7,7 @@ public class ResumenRestaurante {
 	private double longitud;
 	private int numeroPlatos;
 	private int numeroSitiosTuristicos;
+	
 	public String getId() {
 		return id;
 	}

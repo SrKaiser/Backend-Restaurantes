@@ -1,8 +1,16 @@
 package modelos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Plato {
+	
+	@JsonProperty("nombre")
 	private String nombre;
+	
+	@JsonProperty("descripcion")
 	private String descripcion;
+	
+	@JsonProperty("precio")
 	private double precio;
 	
 	public Plato(String nombre, String descripcion, double precio) {

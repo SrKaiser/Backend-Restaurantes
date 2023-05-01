@@ -5,10 +5,10 @@
 
 	<groupId>restaurantes</groupId>
 	<artifactId>restaurantes-rest</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 
-	<name>restaurantes-rest Maven Webapp</name>
+	<name>restaurantes-rest</name>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
@@ -20,6 +20,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>arso</groupId>
+			<artifactId>proyecto</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<!-- Jersey: implementación JAX-RS -->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>

@@ -3,12 +3,19 @@ package modelos;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SitioTuristico {
 	
+	@JsonProperty("titulo")
 	private String titulo;
+	@JsonProperty("resumen")
 	private String resumen;
+	@JsonProperty("categorias")
 	private List<String> categorias;
+	@JsonProperty("enlaces")
 	private List<String> enlaces;
+	@JsonProperty("imagenes")
 	private List<String> imagenes;
 	
 	public SitioTuristico(String titulo, String resumen, List<String> categorias, List<String> enlaces, List<String> imagenes) {

@@ -5,7 +5,8 @@
 
 	<groupId>arso</groupId>
 	<artifactId>proyecto</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
+
 
 	<name>restaurantes</name>
 	<!-- FIXME change it to the project's website -->
@@ -13,8 +14,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -44,6 +45,12 @@
 			<artifactId>mongodb-driver-sync</artifactId>
 			<version>4.5.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>2.26</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

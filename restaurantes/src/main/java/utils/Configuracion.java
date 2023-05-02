@@ -17,9 +17,9 @@ public class Configuracion {
         try {
             PropertiesReader propertiesReader;
             if (PruebasBasicas.isTestEnvironment) {
-                propertiesReader = new PropertiesReader("test.properties");
+            	propertiesReader = new PropertiesReader("test.properties");
             } else {
-                propertiesReader = new PropertiesReader("application.properties");
+                propertiesReader = new PropertiesReader("aplicacion.properties");
             }
             properties = propertiesReader.getProperties();
         } catch (IOException e) {

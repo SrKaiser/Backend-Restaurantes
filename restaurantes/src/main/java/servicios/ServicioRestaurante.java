@@ -2,30 +2,19 @@ package servicios;
 
 import java.util.List;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
-
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import repositorios.RepositorioRestauranteMongoDB;
+import repositorios.FactoriaRepositorios;
+import repositorios.IRepositorioRestaurante;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	
-	private RepositorioRestauranteMongoDB repositorioRestaurante;
+	private IRepositorioRestaurante repositorioRestaurante;
 
     public ServicioRestaurante() {
-    	String connectionString = "mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority";
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .build();
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("proyecto-arso");
-        this.repositorioRestaurante = new RepositorioRestauranteMongoDB(database);
+    	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(IRepositorioRestaurante.class);
     }
     
     @Override

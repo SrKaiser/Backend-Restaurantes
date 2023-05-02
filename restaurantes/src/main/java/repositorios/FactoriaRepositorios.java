@@ -24,8 +24,10 @@ public class FactoriaRepositorios {
 				}
 				else {
 					Properties properties = Configuracion.cargarConfiguracion();
-					String clase = properties.getProperty(entidad.getName());
-					R repositorio = (R) Class.forName(clase).getConstructor().newInstance();
+					System.out.println("Archivo de configuración cargado correctamente: " + properties);
+					String className = properties.getProperty(entidad.getName());
+					System.out.println("Clase de repositorio: " + className);
+					R repositorio = (R) Class.forName(className).getConstructor().newInstance();
 					repositorios.put(entidad, repositorio);
 					return repositorio;
 				}

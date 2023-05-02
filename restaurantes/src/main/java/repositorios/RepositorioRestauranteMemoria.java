@@ -80,9 +80,7 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	        return false;
 	    }
 
-	    List<Plato> platos = restaurante.getPlatos();
-	    platos.add(plato);
-	    restaurante.setPlatos(platos);
+	    restaurante.addPlato(plato);
 	    return true;
 	}
 

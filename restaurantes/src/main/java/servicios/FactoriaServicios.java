@@ -18,8 +18,10 @@ public class FactoriaServicios {
 					return (T) servicios.get(servicio);
 				}
 				else {
-					Properties properties = Configuracion.cargarConfiguracion();		
+					Properties properties = Configuracion.cargarConfiguracion();
+					System.out.println("Archivo de configuración cargado correctamente: " + properties);
 					String clase = properties.getProperty(servicio.getName());
+					System.out.println("Clase de servicio: " + clase);
 					return (T) Class.forName(clase).getConstructor().newInstance();
 				}
 				

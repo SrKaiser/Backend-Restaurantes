@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -26,8 +30,14 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 
 	private final MongoCollection<Document> restauranteCollection;
 
-    public RepositorioRestauranteMongoDB(MongoDatabase database) {
-        this.restauranteCollection = database.getCollection("restaurantes");
+    public RepositorioRestauranteMongoDB() {
+	  String connectionString = "mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority";
+	  MongoClientSettings settings = MongoClientSettings.builder()
+	          .applyConnectionString(new ConnectionString(connectionString))
+	          .build();
+	  MongoClient mongoClient = MongoClients.create(settings);
+	  MongoDatabase database = mongoClient.getDatabase("proyecto-arso");
+      this.restauranteCollection = database.getCollection("restaurantes");
     }
 
 	@Override

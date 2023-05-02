@@ -6,18 +6,13 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import repositorios.FactoriaRepositorios;
-import repositorios.RepositorioRestauranteMongoDB;
 import servicios.FactoriaServicios;
 import servicios.IServicioRestaurante;
-import servicios.ServicioRestaurante;
 
 
 public class PruebasBasicas {
 	public static boolean isTestEnvironment = false;
 	public static void main(String[] args) {
-//		ServicioRestaurante serv = new ServicioRestaurante();
-		RepositorioRestauranteMongoDB repositorio = FactoriaRepositorios.getRepositorio(Restaurante.class);
 		IServicioRestaurante serv = FactoriaServicios.getServicio(IServicioRestaurante.class);
 		// Prueba de alta de restaurantes
 		String id = serv.altaRestaurante("Goiko", 40.42039145624014, -3.6996503622016954);

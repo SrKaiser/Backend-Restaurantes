@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import modelos.Restaurante;
 import modelos.SolicitudRestaurante;
+import retrofit2.http.PUT;
 import servicios.IServicioRestaurante;
 import servicios.ServicioRestaurante;
 
@@ -74,5 +75,32 @@ public class RestauranteControladorRest {
             return Response.status(Response.Status.CREATED).entity(id).build();
         }
     }
+    
+    @PUT
+    @Path("/{id}")
+    @ApiOperation(value = "Actualiza un restaurante por ID", response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Restaurante actualizado correctamente"),
+        @ApiResponse(code = 400, message = "Solicitud incorrecta"),
+        @ApiResponse(code = 404, message = "Restaurante no encontrado")
+    })
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateRestaurante(
+        @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
+        SolicitudRestaurante actualizacionRestaurante) {
+
+        String nombre = actualizacionRestaurante.getNombre();
+        double latitud = actualizacionRestaurante.getLatitud();
+        double longitud = actualizacionRestaurante.getLongitud();
+
+        boolean updated = servicioRestaurante.actualizarRestaurante(id, nombre, latitud, longitud);
+
+        if (updated) {
+            return Response.status(Response.Status.OK).entity("Restaurante actualizado correctamente").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
+        }
+    }
+
 
 }

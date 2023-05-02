@@ -33,6 +33,8 @@ public class Restaurante {
 		this.nombre = nombre;
 		this.latitud = latitud;
 		this.longitud = longitud;
+		this.sitiosTuristicos = new LinkedList<SitioTuristico>();
+		this.platos = new LinkedList<Plato>();
 	}
 
 	public Restaurante() {
@@ -94,6 +96,10 @@ public class Restaurante {
 
 	public void setPlatos(List<Plato> platos) {
 		this.platos = platos;
+	}
+	
+	public void addPlato(Plato plato) {
+		platos.add(plato);
 	}
 
 	@Override

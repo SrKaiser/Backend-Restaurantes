@@ -7,11 +7,11 @@ import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 
-public interface IRepositorioRestaurante {
+public interface IRepositorioRestaurante{
 	
-	public String insert(String nombre, double latitud, double longitud);
+	public String altaRestaurante(String nombre, double latitud, double longitud);
 	
-	boolean update(String idRestaurante, String nombre, double latitud, double longitud);
+	boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud);
 	
 	List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante);
 	
@@ -23,9 +23,9 @@ public interface IRepositorioRestaurante {
 	
 	boolean updatePlato(String idRestaurante, Plato plato);
 	
-	Restaurante findById(String idRestaurante);
+	Restaurante recuperarRestaurante(String idRestaurante);
 	
-	boolean delete(String idRestaurante);
+	boolean borrarRestaurante(String idRestaurante);
 	
-	List<ResumenRestaurante> findAll();
+	List<ResumenRestaurante> listarRestaurantes();
 }

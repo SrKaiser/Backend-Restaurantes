@@ -28,6 +28,13 @@ public class Restaurante {
 		this.platos = new LinkedList<Plato>();
 	}
 	
+	public Restaurante(String id, String nombre, double latitud, double longitud) {
+		this.id = id;
+		this.nombre = nombre;
+		this.latitud = latitud;
+		this.longitud = longitud;
+	}
+
 	public Restaurante() {
 		this.sitiosTuristicos = new LinkedList<SitioTuristico>();
 		this.platos = new LinkedList<Plato>();

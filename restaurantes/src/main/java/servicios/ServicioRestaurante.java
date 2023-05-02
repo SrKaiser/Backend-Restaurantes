@@ -12,11 +12,11 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import repositorios.RepositorioRestaurante;
+import repositorios.RepositorioRestauranteMongoDB;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	
-	private RepositorioRestaurante repositorioRestaurante;
+	private RepositorioRestauranteMongoDB repositorioRestaurante;
 
     public ServicioRestaurante() {
     	String connectionString = "mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority";
@@ -25,17 +25,17 @@ public class ServicioRestaurante implements IServicioRestaurante {
                 .build();
         MongoClient mongoClient = MongoClients.create(settings);
         MongoDatabase database = mongoClient.getDatabase("proyecto-arso");
-        this.repositorioRestaurante = new RepositorioRestaurante(database);
+        this.repositorioRestaurante = new RepositorioRestauranteMongoDB(database);
     }
     
     @Override
     public String altaRestaurante(String nombre, double latitud, double longitud) {
-    	return repositorioRestaurante.insert(nombre, latitud, longitud);
+    	return repositorioRestaurante.altaRestaurante(nombre, latitud, longitud);
     }
     
     @Override
     public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) {
-        return repositorioRestaurante.update(idRestaurante, nombre, latitud, longitud);
+        return repositorioRestaurante.actualizarRestaurante(idRestaurante, nombre, latitud, longitud);
     }
     
     @Override
@@ -65,17 +65,17 @@ public class ServicioRestaurante implements IServicioRestaurante {
     
     @Override
     public Restaurante recuperarRestaurante(String idRestaurante) {
-        return repositorioRestaurante.findById(idRestaurante);
+        return repositorioRestaurante.recuperarRestaurante(idRestaurante);
     }
     
     @Override
     public boolean borrarRestaurante(String idRestaurante) {
-        return repositorioRestaurante.delete(idRestaurante);
+        return repositorioRestaurante.borrarRestaurante(idRestaurante);
     }
     
     @Override
     public List<ResumenRestaurante> recuperarTodosRestaurantes() {
-        return repositorioRestaurante.findAll();
+        return repositorioRestaurante.listarRestaurantes();
     }
 
 }

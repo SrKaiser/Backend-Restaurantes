@@ -22,16 +22,16 @@ import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import servicios.ServicioSitiosTuristicos;
 
-public class RepositorioRestaurante implements IRepositorioRestaurante{
+public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 
 	private final MongoCollection<Document> restauranteCollection;
 
-    public RepositorioRestaurante(MongoDatabase database) {
+    public RepositorioRestauranteMongoDB(MongoDatabase database) {
         this.restauranteCollection = database.getCollection("restaurantes");
     }
 
 	@Override
-	public String insert(String nombre, double latitud, double longitud) {
+	public String altaRestaurante(String nombre, double latitud, double longitud) {
 	 Document doc = new Document("nombre", nombre)
                 .append("latitud", latitud)
                 .append("longitud", longitud);
@@ -42,7 +42,7 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
 	}
 	
 	@Override
-    public boolean update(String idRestaurante, String nombre, double latitud, double longitud) {
+    public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) {
         ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -161,7 +161,7 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
 	
 	@Override
     @SuppressWarnings("unchecked")
-    public Restaurante findById(String idRestaurante) {
+    public Restaurante recuperarRestaurante(String idRestaurante) {
         ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -212,7 +212,7 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
         return restaurante;
     }
 	
-	public boolean delete(String idRestaurante) {
+	public boolean borrarRestaurante(String idRestaurante) {
 		ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -226,7 +226,7 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
 	
 	@Override
 	@SuppressWarnings("unchecked")
-    public List<ResumenRestaurante> findAll() {
+    public List<ResumenRestaurante> listarRestaurantes() {
         List<ResumenRestaurante> restaurantesList = new ArrayList<>();
         try (MongoCursor<Document> cursor = restauranteCollection.find().iterator()) {
             while (cursor.hasNext()) {
@@ -246,6 +246,5 @@ public class RepositorioRestaurante implements IRepositorioRestaurante{
         return restaurantesList;
     }
 
-	
 
 }

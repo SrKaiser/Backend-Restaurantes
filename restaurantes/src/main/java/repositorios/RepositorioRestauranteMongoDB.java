@@ -59,7 +59,10 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
             return false;
         }
 
-        long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("nombre", nombre), Updates.set("latitud", latitud), Updates.set("longitud", longitud))).getModifiedCount();
+        long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId), 
+        		Updates.combine(Updates.set("nombre", nombre),
+        				Updates.set("latitud", latitud), 
+        				Updates.set("longitud", longitud))).getModifiedCount();
         return updatedCount > 0;
     }
 	
@@ -108,7 +111,8 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
                         .append("enlaces", sitioTuristico.getEnlaces())
                         .append("imagenes", sitioTuristico.getImagenes()))
                 .collect(Collectors.toList());
-		UpdateResult result = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.set("sitiosTuristicosDestacados", sitiosTuristicosDocumentos));
+		UpdateResult result = restauranteCollection.updateOne(Filters.eq("_id", objectId), 
+				Updates.set("sitiosTuristicosDestacados", sitiosTuristicosDocumentos));
         return result.getModifiedCount() == 1;
     }
 	
@@ -186,7 +190,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
         restaurante.setNombre(doc.getString("nombre"));
         restaurante.setLatitud(doc.getDouble("latitud"));
         restaurante.setLongitud(doc.getDouble("longitud"));
-        // TODO Obtener los platos y sitios turisticos?
+  
       
         List<Plato> platos = new ArrayList<>();
 		List<Document> platosDocs = (List<Document>) doc.get("platos");

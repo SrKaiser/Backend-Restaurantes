@@ -3,6 +3,7 @@ package repositorio;
 import java.util.List;
 
 import modelos.Opinion;
+import modelos.Valoracion;
 
 public interface IRepositorioOpinion {
 	
@@ -12,7 +13,9 @@ public interface IRepositorioOpinion {
     
 	List<Opinion> findAll();
     
-	void update(Opinion opinion);
+	boolean update(Opinion opinion);
     
-	void delete(String id);
+	boolean delete(String id);
+	
+	boolean addValoracion(String id, Valoracion valoracion);
 }

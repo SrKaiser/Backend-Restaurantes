@@ -38,6 +38,10 @@ public class Opinion {
     public void setValoraciones(List<Valoracion> valoraciones) {
         this.valoraciones = valoraciones;
     }
+    
+    public void addValoracion(Valoracion valoracion) {
+    	valoraciones.add(valoracion);
+    }
 
     public int getNumeroValoraciones() {
         return valoraciones.size();

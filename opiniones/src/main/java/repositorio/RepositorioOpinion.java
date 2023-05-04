@@ -1,9 +1,11 @@
 package repositorio;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -32,15 +34,24 @@ public class RepositorioOpinion implements IRepositorioOpinion {
 
 	@Override
 	public String create(Opinion opinion) {
-		Document doc = new Document().append("_id", opinion.getId()).append("nombreRecurso", opinion.getNombreRecurso())
+		Document doc = new Document()
+				.append("nombreRecurso", opinion.getNombreRecurso())
 				.append("valoraciones", opinion.getValoraciones());
 		opiniones.insertOne(doc);
-		return opinion.getId();
+		ObjectId id = doc.getObjectId("_id");
+        return id.toHexString();
 	}
 
 	@Override
 	public Opinion findById(String id) {
-		Document doc = opiniones.find(Filters.eq("_id", id)).first();
+		ObjectId objectId;
+        try {
+            objectId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        
+		Document doc = opiniones.find(Filters.eq("_id", objectId)).first();
 		if (doc == null) {
 			return null;
 		}
@@ -57,22 +68,74 @@ public class RepositorioOpinion implements IRepositorioOpinion {
 	}
 
 	@Override
-	public void update(Opinion opinion) {
-		opiniones.updateOne(Filters.eq("_id", opinion.getId()),
+	public boolean update(Opinion opinion) {
+		ObjectId objectId;
+        try {
+            objectId = new ObjectId(opinion.getId());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+		
+		long updatedCount = opiniones.updateOne(Filters.eq("_id", objectId),
 				Updates.combine(Updates.set("nombreRecurso", opinion.getNombreRecurso()),
-						Updates.set("valoraciones", opinion.getValoraciones())));
+						Updates.set("valoraciones", opinion.getValoraciones()))).getModifiedCount();
+		return updatedCount > 0;
 	}
+	
+	@Override
+	public boolean addValoracion(String id, Valoracion valoracion) {
+	    ObjectId objectId;
+	    try {
+	        objectId = new ObjectId(id);
+	    } catch (IllegalArgumentException e) {
+	        return false;
+	    }
+
+	    Document valoracionDoc = new Document()
+	            .append("email", valoracion.getCorreoElectronico())
+	            .append("fecha", valoracion.getFecha().toString())
+	            .append("calificacion", valoracion.getCalificacion())
+	            .append("comentario", valoracion.getComentario());
+
+	    long resultCount = opiniones.updateOne(
+	            Filters.eq("_id", objectId),
+	            Updates.addToSet("valoraciones", valoracionDoc)
+	    ).getModifiedCount();
+
+	    return resultCount > 0;
+	}
+
+	
 
 	@Override
-	public void delete(String id) {
-		opiniones.deleteOne(Filters.eq("_id", id));
+	public boolean delete(String id) {
+		ObjectId objectId;
+        try {
+            objectId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+		long deletedCount = opiniones.deleteOne(Filters.eq("_id", objectId)).getDeletedCount();
+		return deletedCount > 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Opinion documentToOpinion(Document doc) {
 		Opinion opinion = new Opinion();
-		opinion.setId(doc.getString("_id"));
+		opinion.setId(doc.getObjectId("_id").toString());
 		opinion.setNombreRecurso(doc.getString("nombreRecurso"));
-		opinion.setValoraciones(doc.getList("valoraciones", Valoracion.class));
+		List<Valoracion> valoraciones = new ArrayList<>();
+	    for (Document valoracionDoc : (List<Document>) doc.get("valoraciones")) {
+	        LocalDate fecha = LocalDate.parse(valoracionDoc.getString("fecha"));
+	        Valoracion valoracion = new Valoracion(
+	                valoracionDoc.getString("email"),
+	                valoracionDoc.getInteger("calificacion"),
+	                valoracionDoc.getString("comentario")
+	        );
+	        valoracion.setFecha(fecha);
+	        valoraciones.add(valoracion);
+	    }
+	    opinion.setValoraciones(valoraciones);
 		return opinion;
 	}
 }

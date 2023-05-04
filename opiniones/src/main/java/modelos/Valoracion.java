@@ -2,10 +2,17 @@ package modelos;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Valoracion {
+	
+	@JsonProperty("correoElectronico")
     private String correoElectronico;
+	@JsonProperty("fecha")
     private LocalDate fecha;
+	@JsonProperty("calificacion")
     private int calificacion;
+	@JsonProperty("comentario")
     private String comentario;
 
     public Valoracion(String correoElectronico, int calificacion) {
@@ -20,6 +27,8 @@ public class Valoracion {
         this.calificacion = calificacion;
         this.comentario = comentario;
     }
+    
+    public Valoracion() {}
 
     public String getCorreoElectronico() {
         return correoElectronico;

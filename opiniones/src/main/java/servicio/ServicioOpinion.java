@@ -1,14 +1,17 @@
 package servicio;
 
+import java.util.List;
+
 import modelos.Opinion;
 import modelos.Valoracion;
-import repositorio.RepositorioOpinion;
+import repositorio.FactoriaRepositorio;
+import repositorio.IRepositorioOpinion;
 
 public class ServicioOpinion implements IServicioOpinion{
-	private final RepositorioOpinion repositorioOpinion;
+	private IRepositorioOpinion repositorioOpinion;
 
-    public ServicioOpinion(RepositorioOpinion repositorioOpinion) {
-        this.repositorioOpinion = repositorioOpinion;
+    public ServicioOpinion() {
+        this.repositorioOpinion = FactoriaRepositorio.getRepositorio(IRepositorioOpinion.class);;
     }
 
     @Override
@@ -18,13 +21,15 @@ public class ServicioOpinion implements IServicioOpinion{
     }
 
     @Override
-    public void añadirValoracion(String idOpinion, Valoracion valoracion) {
+    public boolean añadirValoracion(String idOpinion, Valoracion valoracion) {
         Opinion opinion = repositorioOpinion.findById(idOpinion);
         if (opinion != null) {
             opinion.getValoraciones().removeIf(v -> v.getCorreoElectronico().equals(valoracion.getCorreoElectronico()));
-            opinion.getValoraciones().add(valoracion);
-            repositorioOpinion.update(opinion);
+            opinion.addValoracion(valoracion);
+            repositorioOpinion.addValoracion(idOpinion, valoracion);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -33,7 +38,12 @@ public class ServicioOpinion implements IServicioOpinion{
     }
 
     @Override
-    public void eliminarOpinion(String idOpinion) {
-    	repositorioOpinion.delete(idOpinion);
+    public boolean eliminarOpinion(String idOpinion) {
+    	return repositorioOpinion.delete(idOpinion);
+    }
+    
+    @Override
+    public List<Opinion> obtenerOpiniones() {
+    	return repositorioOpinion.findAll();
     }
 }

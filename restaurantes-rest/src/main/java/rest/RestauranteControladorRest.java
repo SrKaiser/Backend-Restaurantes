@@ -79,32 +79,32 @@ public class RestauranteControladorRest {
         }
     }
     
-    @PUT
-    @Path("/{id}")
-    @ApiOperation(value = "Actualiza un restaurante por ID", response = String.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Restaurante actualizado correctamente"),
-        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
-        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
-    })
-    @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    public Response updateRestaurante(
-        @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
-        SolicitudRestaurante actualizacionRestaurante) {
-
-        String nombre = actualizacionRestaurante.getNombre();
-        double latitud = actualizacionRestaurante.getLatitud();
-        double longitud = actualizacionRestaurante.getLongitud();
-
-        boolean updated = servicioRestaurante.actualizarRestaurante(id, nombre, latitud, longitud);
-
-        if (updated) {
-            return Response.status(Response.Status.OK).entity("Restaurante actualizado correctamente").build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
-        }
-    }
+//    @PUT
+//    @Path("/{id}/update")
+//    @ApiOperation(value = "Actualiza un restaurante por ID", response = String.class)
+//    @ApiResponses(value = {
+//        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Restaurante actualizado correctamente"),
+//        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
+//        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
+//    })
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+//    public Response updateRestaurante(
+//        @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
+//        SolicitudRestaurante actualizacionRestaurante) {
+//
+//        String nombre = actualizacionRestaurante.getNombre();
+//        double latitud = actualizacionRestaurante.getLatitud();
+//        double longitud = actualizacionRestaurante.getLongitud();
+//
+//        boolean updated = servicioRestaurante.actualizarRestaurante(id, nombre, latitud, longitud);
+//
+//        if (updated) {
+//            return Response.status(Response.Status.OK).entity("Restaurante actualizado correctamente").build();
+//        } else {
+//            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
+//        }
+//    }
     
     @GET
     @Path("/{id}/sitios-turisticos")
@@ -124,25 +124,25 @@ public class RestauranteControladorRest {
         return Response.ok(sitiosTuristicos).build();
     }
     
-    @PUT
-    @Path("/{id}/sitios-turisticos-destacados")
-    @ApiOperation(value = "Establece los sitios turísticos destacados de un restaurante", response = Boolean.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Sitios turísticos destacados actualizados correctamente"),
-        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
-    })
-    @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos-destacados
-    public Response setSitiosTuristicosDestacados(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                                                  @ApiParam(value = "Lista de sitios turísticos destacados", required = true) List<SitioTuristico> sitiosTuristicos) {
-        boolean resultado = servicioRestaurante.establecerSitiosTuristicosDestacados(idRestaurante, sitiosTuristicos);
-
-        if (!resultado) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
-        }
-
-        return Response.ok(resultado).build();
-    }
+//    @PUT
+//    @Path("/{id}/sitios-turisticos-destacados")
+//    @ApiOperation(value = "Establece los sitios turísticos destacados de un restaurante", response = Boolean.class)
+//    @ApiResponses(value = {
+//        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Sitios turísticos destacados actualizados correctamente"),
+//        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
+//    })
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    // curl -X PUT -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos-destacados
+//    public Response setSitiosTuristicosDestacados(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
+//                                                  @ApiParam(value = "Lista de sitios turísticos destacados", required = true) List<SitioTuristico> sitiosTuristicos) {
+//        boolean resultado = servicioRestaurante.establecerSitiosTuristicosDestacados(idRestaurante, sitiosTuristicos);
+//
+//        if (!resultado) {
+//            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
+//        }
+//
+//        return Response.ok(resultado).build();
+//    }
 
     @POST
     @Path("/{id}/platos")
@@ -183,25 +183,25 @@ public class RestauranteControladorRest {
         return Response.ok(resultado).build();
     }
     
-    @PUT
-    @Path("/{id}/platos")
-    @ApiOperation(value = "Actualiza un plato de un restaurante", response = Boolean.class)
-    @ApiResponses(value = {
-        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Plato actualizado correctamente"),
-        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante o plato no encontrado")
-    })
-    @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "nombre", "descripcion": "NuevaDescripcion", "precio": NuevoPrecio}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
-    public Response updatePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                                Plato plato) {
-        boolean resultado = servicioRestaurante.actualizarPlato(idRestaurante, plato);
-
-        if (!resultado) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante o plato no encontrado").build();
-        }
-
-        return Response.ok(resultado).build();
-    }
+//    @PUT
+//    @Path("/{id}/update-plato")
+//    @ApiOperation(value = "Actualiza un plato de un restaurante", response = Boolean.class)
+//    @ApiResponses(value = {
+//        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Plato actualizado correctamente"),
+//        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante o plato no encontrado")
+//    })
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "nombre", "descripcion": "NuevaDescripcion", "precio": NuevoPrecio}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+//    public Response updatePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
+//                                Plato plato) {
+//        boolean resultado = servicioRestaurante.actualizarPlato(idRestaurante, plato);
+//
+//        if (!resultado) {
+//            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante o plato no encontrado").build();
+//        }
+//
+//        return Response.ok(resultado).build();
+//    }
 
     @DELETE
     @Path("/{id}")

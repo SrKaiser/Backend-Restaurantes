@@ -16,21 +16,32 @@ import retrofit2.Response;
 
 public class PruebasRetrofit {
 	static RestauranteAPI api = FactoriaRetrofit.getApi();
-	static String idRestaurante = "64515a365764ef6631390f24";
+	static String idRestaurante;
+	static String idRestaurante2;
 	public static void main(String[] args) {
-        obtenerRestaurante();
-		crearRestaurante();
-		updateRestaurante();
-		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
-		setSitiosTuristicosDestacados(sitios);
+        System.out.println("Crear restaurante: ");
+        idRestaurante = crearRestaurante(new SolicitudRestaurante("Goiko", 40.123, -3.567));
+        System.out.println("Crear restaurante McDonalds: ");
+        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
+		//updateRestaurante();
+//        System.out.println("Obtener sitios turisticos: ");
+//		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
+//		//setSitiosTuristicosDestacados(sitios);
+		System.out.println("Añadir Plato 1: ");
 		String nombrePlato = "Plato 1";
 		addPlato(nombrePlato);
+		System.out.println("Borrar Plato 1: ");
 		removePlato(nombrePlato);
+		System.out.println("Añadir Plato 2: ");
 		String nombrePlato2 = "Plato 2";
 		addPlato(nombrePlato2);
-		updatePlato(nombrePlato2);
+//		//updatePlato(nombrePlato2);
+		System.out.println("Obtener restaurante: ");
+        obtenerRestaurante();
+		System.out.println("Borrar restaurante McDonalds: ");
         borrarRestaurante();
-        listarRestaurantes();
+//        System.out.println("Listar restaurantes: ");
+//        listarRestaurantes();
 		
     }
 	
@@ -45,17 +56,25 @@ public class PruebasRetrofit {
         }
 	}
 	
-	public static void crearRestaurante() {
-        SolicitudRestaurante nuevoRestauranteRequest = new SolicitudRestaurante("Goiko", 40.123, -3.567);
+	public static String crearRestaurante(SolicitudRestaurante nuevoRestauranteRequest) {
+        
         Call<ResponseBody> crearRestauranteCall = api.crearRestaurante(nuevoRestauranteRequest);
 
         try {
             Response<ResponseBody> response = crearRestauranteCall.execute();
             System.out.println(response.code());
-            System.out.println(response.headers().get("Location"));
+            if (response.isSuccessful()) {
+                String idRestaurante = response.body().string();
+                System.out.println("ID del restaurante creado: " + idRestaurante);
+                return idRestaurante;
+            } else {
+                System.out.println("Error al crear el restaurante");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        return null;
 	}
 	
 	public static void updateRestaurante() {
@@ -140,7 +159,7 @@ public class PruebasRetrofit {
     }
 
     public static void borrarRestaurante() {
-        Call<Boolean> borrarRestauranteCall = api.borrarRestaurante(idRestaurante);
+        Call<Boolean> borrarRestauranteCall = api.borrarRestaurante(idRestaurante2);
 
         try {
             Response<Boolean> response = borrarRestauranteCall.execute();

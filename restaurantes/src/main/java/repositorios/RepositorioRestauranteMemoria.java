@@ -40,7 +40,7 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	    restaurantes.put(idRestaurante, restaurante);
 	    return true;
 	}
-
+	
 	@Override
 	public List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) {
 		ServicioSitiosTuristicos servSitiosTuristicos = new ServicioSitiosTuristicos();

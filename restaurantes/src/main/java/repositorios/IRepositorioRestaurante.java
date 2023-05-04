@@ -2,9 +2,6 @@ package repositorios;
 
 import java.util.List;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -22,23 +19,14 @@ public interface IRepositorioRestaurante{
     
 	boolean delete(String id);
 	
+	List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante);
+	
     boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos);
     
     boolean addPlato(String idRestaurante, Plato plato);
     
     boolean removePlato(String idRestaurante, String nombrePlato);
     
-    boolean updatePlato(String idRestaurante, String nombrePlato, Plato plato);
-    
+    boolean updatePlato(String idRestaurante, Plato plato);
 
-	boolean setSitiosTuristicosDestacados(ObjectId objectId, List<Document> sitiosTuristicosDocumentos);
-	
-	boolean addPlato(ObjectId objectId, Document platoDoc);
-	
-	boolean removePlato(ObjectId objectId, String nombrePlato);
-	
-	boolean updatePlato(ObjectId objectId, String nombre, Document platoDoc);
-	
-	
-	
 }

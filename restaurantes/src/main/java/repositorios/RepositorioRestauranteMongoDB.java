@@ -1,10 +1,7 @@
 package repositorios;
 
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -24,7 +21,6 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import servicios.ServicioSitiosTuristicos;
 
 public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 
@@ -41,7 +37,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
     }
 
 	@Override
-	public String altaRestaurante(String nombre, double latitud, double longitud) {
+	public String create(String nombre, double latitud, double longitud) {
 	 Document doc = new Document("nombre", nombre)
                 .append("latitud", latitud)
                 .append("longitud", longitud);
@@ -52,7 +48,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 	}
 	
 	@Override
-    public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) {
+    public boolean update(String idRestaurante, String nombre, double latitud, double longitud) {
         ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -65,104 +61,30 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
     }
 	
 	@Override
-    public List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) {
-		ServicioSitiosTuristicos servSitiosTuristicos = new ServicioSitiosTuristicos();
-		Restaurante r = getCoordenadas(idRestaurante);
-        List<SitioTuristico> listaSitiosTuristicos = new LinkedList<>();
-		try {
-			listaSitiosTuristicos = servSitiosTuristicos.obtenerSitios(r.getLatitud(), r.getLongitud());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
-        return listaSitiosTuristicos;
-    }
-	
-    private Restaurante getCoordenadas(String idRestaurante) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(idRestaurante);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-
-        Document doc = restauranteCollection.find(Filters.eq("_id", objectId)).first();
-        if (doc == null) {
-            return null;
-        }
-
-        Restaurante restaurante = new Restaurante();
-        restaurante.setLatitud(doc.getDouble("latitud"));
-        restaurante.setLongitud(doc.getDouble("longitud"));
- 
-        return restaurante;
-    }
-	
-	@Override
-    public boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) {
-		ObjectId objectId = new ObjectId(idRestaurante);
-        List<Document> sitiosTuristicosDocumentos = sitiosTuristicos.stream()
-                .map(sitioTuristico -> new Document()
-                		.append("titulo", sitioTuristico.getTitulo())
-                        .append("resumen", sitioTuristico.getResumen())
-                        .append("categorias", sitioTuristico.getCategorias())
-                        .append("enlaces", sitioTuristico.getEnlaces())
-                        .append("imagenes", sitioTuristico.getImagenes()))
-                .collect(Collectors.toList());
-        UpdateResult result = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.set("sitiosTuristicosDestacados", sitiosTuristicosDocumentos));
+    public boolean setSitiosTuristicosDestacados(ObjectId objectId, List<Document> sitiosTuristicosDocumentos) {
+		UpdateResult result = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.set("sitiosTuristicosDestacados", sitiosTuristicosDocumentos));
         return result.getModifiedCount() == 1;
     }
 	
-	@Override
-    public boolean addPlato(String idRestaurante, Plato plato) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(idRestaurante);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-
-        Document platoDoc = new Document()
-                .append("nombre", plato.getNombre())
-                .append("descripcion", plato.getDescripcion())
-                .append("precio", plato.getPrecio());
-
+    @Override
+	public boolean addPlato(ObjectId objectId, Document platoDoc) {
         long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId), Updates.push("platos", platoDoc)).getModifiedCount();
         return updatedCount > 0;
     }
 	
 	@Override
-    public boolean removePlato(String idRestaurante, String nombrePlato) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(idRestaurante);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-
+    public boolean removePlato(ObjectId objectId, String nombrePlato) {
         long updatedCount = restauranteCollection.updateOne(Filters.eq("_id", objectId),
                 Updates.pull("platos", new Document("nombre", nombrePlato))).getModifiedCount();
         return updatedCount > 0;
     }
 	
-	@Override
-    public boolean updatePlato(String idRestaurante, Plato plato) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(idRestaurante);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-
-        Document platoDoc = new Document()
-                .append("nombre", plato.getNombre())
-                .append("descripcion", plato.getDescripcion())
-                .append("precio", plato.getPrecio());
-
+    @Override
+    public boolean updatePlato(ObjectId objectId, String nombre, Document platoDoc) {
         long updatedCount = restauranteCollection.updateOne(
                 Filters.and(
                     Filters.eq("_id", objectId),
-                    Filters.elemMatch("platos", Filters.eq("nombre", plato.getNombre()))
+                    Filters.elemMatch("platos", Filters.eq("nombre", nombre))
                 ),
                 Updates.set("platos.$", platoDoc)
         ).getModifiedCount();
@@ -171,7 +93,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 	
 	@Override
     @SuppressWarnings("unchecked")
-    public Restaurante recuperarRestaurante(String idRestaurante) {
+    public Restaurante findById(String idRestaurante) {
         ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -222,7 +144,8 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
         return restaurante;
     }
 	
-	public boolean borrarRestaurante(String idRestaurante) {
+	@Override
+	public boolean delete(String idRestaurante) {
 		ObjectId objectId;
         try {
             objectId = new ObjectId(idRestaurante);
@@ -236,7 +159,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
 	
 	@Override
 	@SuppressWarnings("unchecked")
-    public List<ResumenRestaurante> listarRestaurantes() {
+    public List<ResumenRestaurante> findAll() {
         List<ResumenRestaurante> restaurantesList = new ArrayList<>();
         try (MongoCursor<Document> cursor = restauranteCollection.find().iterator()) {
             while (cursor.hasNext()) {

@@ -21,12 +21,12 @@ public class PruebasRetrofit {
 	public static void main(String[] args) {
         System.out.println("Crear restaurante: ");
         idRestaurante = crearRestaurante(new SolicitudRestaurante("Goiko", 40.123, -3.567));
-        System.out.println("Crear restaurante McDonalds: ");
-        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
+//        System.out.println("Crear restaurante McDonalds: ");
+//        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
 		//updateRestaurante();
-//        System.out.println("Obtener sitios turisticos: ");
-//		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
-//		//setSitiosTuristicosDestacados(sitios);
+        System.out.println("Obtener sitios turisticos: ");
+		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
+		//setSitiosTuristicosDestacados(sitios);
 		System.out.println("Añadir Plato 1: ");
 		String nombrePlato = "Plato 1";
 		addPlato(nombrePlato);
@@ -38,8 +38,8 @@ public class PruebasRetrofit {
 //		//updatePlato(nombrePlato2);
 		System.out.println("Obtener restaurante: ");
         obtenerRestaurante();
-		System.out.println("Borrar restaurante McDonalds: ");
-        borrarRestaurante();
+//		System.out.println("Borrar restaurante McDonalds: ");
+//        borrarRestaurante();
 //        System.out.println("Listar restaurantes: ");
 //        listarRestaurantes();
 		

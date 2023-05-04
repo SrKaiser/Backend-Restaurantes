@@ -17,7 +17,7 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	private final Map<String, Restaurante> restaurantes = new HashMap<>();
 	
 	@Override
-	public String altaRestaurante(String nombre, double latitud, double longitud) {
+	public String create(String nombre, double latitud, double longitud) {
 		UUID uuid = UUID.randomUUID();
 		String id = uuid.toString();
         Restaurante restaurante = new Restaurante(id, nombre, latitud, longitud);
@@ -26,7 +26,7 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	}
 
 	@Override
-	public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) {
+	public boolean update(String idRestaurante, String nombre, double latitud, double longitud) {
 		Restaurante restaurante = restaurantes.get(idRestaurante);
 
 	    if (restaurante == null) {
@@ -126,18 +126,18 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 
 
 	@Override
-	public Restaurante recuperarRestaurante(String idRestaurante) {
+	public Restaurante findById(String idRestaurante) {
 	    return restaurantes.get(idRestaurante);
 	}
 
 	@Override
-	public boolean borrarRestaurante(String idRestaurante) {
+	public boolean delete(String idRestaurante) {
 	    Restaurante removed = restaurantes.remove(idRestaurante);
 	    return removed != null;
 	}
 
 	@Override
-	public List<ResumenRestaurante> listarRestaurantes() {
+	public List<ResumenRestaurante> findAll() {
 	    List<ResumenRestaurante> restaurantesList = new ArrayList<>();
 	    for (Restaurante restaurante : restaurantes.values()) {
 	        ResumenRestaurante resumen = new ResumenRestaurante();

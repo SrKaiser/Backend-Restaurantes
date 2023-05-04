@@ -115,8 +115,10 @@ public class RestauranteControladorRest {
     })
     // curl -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
     public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante) {
-        List<SitioTuristico> sitiosTuristicos = servicioRestaurante.obtenerSitiosTuristicosProximos(idRestaurante);
-
+        
+    	System.out.println(idRestaurante);
+    	List<SitioTuristico> sitiosTuristicos = servicioRestaurante.obtenerSitiosTuristicosProximos(idRestaurante);
+        
         if (sitiosTuristicos == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
         }
@@ -174,7 +176,8 @@ public class RestauranteControladorRest {
     // curl -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
     public Response removePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                                 @ApiParam(value = "Nombre del plato a eliminar", required = true) @PathParam("nombrePlato") String nombrePlato) {
-        boolean resultado = servicioRestaurante.borrarPlato(idRestaurante, nombrePlato);
+        
+    	boolean resultado = servicioRestaurante.borrarPlato(idRestaurante, nombrePlato);
 
         if (!resultado) {
             return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();

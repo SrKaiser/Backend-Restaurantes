@@ -1,5 +1,8 @@
 package servicios;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.List;
 
 import modelos.Plato;
@@ -19,7 +22,10 @@ public class ServicioRestaurante implements IServicioRestaurante {
     
     @Override
     public String altaRestaurante(String nombre, double latitud, double longitud) {
-    	return repositorioRestaurante.create(nombre, latitud, longitud);
+    	// Obtén el identificador del usuario gestor del contexto de seguridad
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String gestorId = authentication.getName(); // Esto supone que el identificador del usuario es su nombre de usuario
+    	return repositorioRestaurante.create(nombre, latitud, longitud, gestorId);
     }
     
     @Override

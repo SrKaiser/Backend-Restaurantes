@@ -19,6 +19,8 @@ public class Restaurante {
 	private List<SitioTuristico> sitiosTuristicos;
 	@JsonProperty("platos")
 	private List<Plato> platos;
+	@JsonProperty("gestorId")
+	private String gestorId;
 	
 	public Restaurante(String nombre, double latitud, double longitud) {
 		this.nombre = nombre;
@@ -100,6 +102,14 @@ public class Restaurante {
 	
 	public void addPlato(Plato plato) {
 		platos.add(plato);
+	}
+	
+	public String getGestorId() {
+		return gestorId;
+	}
+	
+	public void setGestorId(String gestorId) {
+		this.gestorId = gestorId;
 	}
 
 	@Override

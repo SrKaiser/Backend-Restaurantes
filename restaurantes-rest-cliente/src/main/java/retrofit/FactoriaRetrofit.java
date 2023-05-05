@@ -1,5 +1,6 @@
-package rest;
+package retrofit;
 
+import rest.RestauranteAPI;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 

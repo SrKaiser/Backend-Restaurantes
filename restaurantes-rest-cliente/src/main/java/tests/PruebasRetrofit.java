@@ -9,8 +9,8 @@ import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import modelos.SolicitudRestaurante;
 import okhttp3.ResponseBody;
-import rest.FactoriaRetrofit;
 import rest.RestauranteAPI;
+import retrofit.FactoriaRetrofit;
 import retrofit2.Call;
 import retrofit2.Response;
 

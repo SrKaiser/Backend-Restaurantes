@@ -9,7 +9,7 @@ import modelos.SitioTuristico;
 
 public interface IRepositorioRestaurante{
 	
-	String create(String nombre, double latitud, double longitud);
+	String create(String nombre, double latitud, double longitud, String gestorId);
     
 	Restaurante findById(String id);
     

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Opinion.Repositorio;
+using Opinion.Servicio;
 using Repositorio;
 
 namespace OpinionApi
@@ -27,7 +28,7 @@ namespace OpinionApi
 
             services.AddSingleton<IRepositorioOpinion, RepositorioOpinion>();
 
-            //services.AddSingleton<IServicioBookle,ServicioBookle>(); 
+            services.AddSingleton<IServicioOpinion,ServicioOpinion>(); 
 
             services.AddControllers(options =>
             {
@@ -37,7 +38,7 @@ namespace OpinionApi
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookleApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OpinionApi", Version = "v1" });
             });
         }
 
@@ -48,7 +49,7 @@ namespace OpinionApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookleApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpinionApi v1"));
             }
 
             // app.UseHttpsRedirection();

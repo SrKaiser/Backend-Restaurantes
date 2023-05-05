@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using Opinion.Modelo;
 using Repositorio;
 
-namespace Opinion.Repositorio {
+namespace Opinion.Repositorio
+{
     public class RepositorioOpinion : IRepositorioOpinion
     {
-        private readonly IMongoCollection<OpinionModelo> _opiniones;
+        private IMongoCollection<OpinionModelo> _opiniones;
 
         public RepositorioOpinion()
         {
@@ -27,19 +28,12 @@ namespace Opinion.Repositorio {
 
         public OpinionModelo FindById(string id)
         {
-            try
-            {
-                var objectId = new ObjectId(id);
-                return _opiniones.Find(opinion => opinion.Id == id).FirstOrDefault();
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
+            var objectId = new ObjectId(id);
+            return _opiniones.Find(opinion => opinion.Id == id).FirstOrDefault();
         }
         public List<OpinionModelo> FindAll()
         {
-            return _opiniones.Find(opinion => true).ToList();
+            return _opiniones.Find(_ => true).ToList();
         }
 
         public bool Update(OpinionModelo opinion)

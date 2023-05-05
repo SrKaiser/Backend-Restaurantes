@@ -6,13 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Valoracion {
 	
-	@JsonProperty("correoElectronico")
     private String correoElectronico;
-	@JsonProperty("fecha")
     private LocalDate fecha;
-	@JsonProperty("calificacion")
     private int calificacion;
-	@JsonProperty("comentario")
     private String comentario;
 
     public Valoracion(String correoElectronico, int calificacion) {

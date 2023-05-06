@@ -23,10 +23,11 @@ import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import modelos.SolicitudRestaurante;
+import modelos.Valoracion;
 import retrofit2.http.DELETE;
-import retrofit2.http.PUT;
 import servicios.FactoriaServicios;
 import servicios.IServicioRestaurante;
+import servicios.ServicioOpinionesRetrofit;
 
 @Api
 @Path("/restaurantes")
@@ -35,6 +36,7 @@ import servicios.IServicioRestaurante;
 public class RestauranteControladorRest {
 	
 	private IServicioRestaurante servicioRestaurante = FactoriaServicios.getServicio(IServicioRestaurante.class);
+	private ServicioOpinionesRetrofit servicioOpiniones = new ServicioOpinionesRetrofit();
     
     @GET
     @Path("/{id}")
@@ -234,6 +236,45 @@ public class RestauranteControladorRest {
         List<ResumenRestaurante> restaurantesList = servicioRestaurante.recuperarTodosRestaurantes();
         return Response.ok(restaurantesList).build();
     }
+    
+    @POST
+    @Path("/registrarOpinion")
+    @ApiOperation(value = "Registra un nuevo recurso en el servicio de opiniones", response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Recurso registrado correctamente"),
+        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Error al registrar el recurso")
+    })
+    public Response registrarRecurso(String nombreRecurso) {
+        String opinionId = servicioOpiniones.registrarRecurso(nombreRecurso);
+        if (opinionId != null) {
+            return Response.ok(opinionId).build();
+        } else {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path("/{idRestaurante}/valoraciones")
+    @ApiOperation(value = "Obtiene las valoraciones de un restaurante", response = Valoracion.class, responseContainer = "List")
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Valoraciones obtenidas correctamente"),
+        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
+    })
+    public Response obtenerValoraciones(@ApiParam(value = "ID del restaurante", required = true) @PathParam("idRestaurante") String idRestaurante) {
+        Restaurante restaurante = servicioRestaurante.recuperarRestaurante(idRestaurante);
+        if (restaurante != null) {
+            String idOpinion = restaurante.getOpinionId();
+            List<Valoracion> valoraciones = servicioOpiniones.obtenerValoraciones(idOpinion);
+            if (valoraciones != null) {
+                return Response.ok(valoraciones).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
 
 
 

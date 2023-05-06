@@ -6,6 +6,7 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
+import modelos.Valoracion;
 
 public interface IServicioRestaurante {
 	
@@ -28,5 +29,7 @@ public interface IServicioRestaurante {
 	boolean borrarRestaurante(String idRestaurante);
 	
 	List<ResumenRestaurante> recuperarTodosRestaurantes();
+	
+	List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante);
 	
 }

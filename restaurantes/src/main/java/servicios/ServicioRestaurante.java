@@ -9,23 +9,28 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
+import modelos.Valoracion;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	
 	private IRepositorioRestaurante repositorioRestaurante;
+	private ServicioOpinionesRetrofit servicioOpiniones;
 
     public ServicioRestaurante() {
     	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(IRepositorioRestaurante.class);
+    	this.servicioOpiniones = new ServicioOpinionesRetrofit();
     }
     
     @Override
     public String altaRestaurante(String nombre, double latitud, double longitud) {
-    	// Obtén el identificador del usuario gestor del contexto de seguridad
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String gestorId = authentication.getName(); // Esto supone que el identificador del usuario es su nombre de usuario
-    	return repositorioRestaurante.create(nombre, latitud, longitud, gestorId);
+        String gestorId = authentication.getName();
+
+        String opinionId = servicioOpiniones.registrarRecurso(nombre);
+        
+        return repositorioRestaurante.create(nombre, latitud, longitud, gestorId, opinionId);
     }
     
     @Override
@@ -71,6 +76,16 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public List<ResumenRestaurante> recuperarTodosRestaurantes() {
         return repositorioRestaurante.findAll();
+    }
+    
+    @Override
+    public List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante){
+    	Restaurante restaurante = recuperarRestaurante(idRestaurante);
+        if (restaurante != null) {
+            return servicioOpiniones.obtenerValoraciones(restaurante.getOpinionId());
+        }
+        return null;
+
     }
 
 	

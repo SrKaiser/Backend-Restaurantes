@@ -2,8 +2,6 @@ package modelos;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Valoracion {
 	
     private String correoElectronico;

@@ -21,6 +21,12 @@ public class Restaurante {
 	private List<Plato> platos;
 	@JsonProperty("gestorId")
 	private String gestorId;
+	@JsonProperty("numeroValoraciones")
+	private int numeroValoraciones;
+	@JsonProperty("calificacionMedia")
+	private double calificacionMedia;
+	@JsonProperty("opinionId")
+	private String opinionId;
 	
 	public Restaurante(String nombre, double latitud, double longitud) {
 		this.nombre = nombre;
@@ -110,6 +116,30 @@ public class Restaurante {
 	
 	public void setGestorId(String gestorId) {
 		this.gestorId = gestorId;
+	}
+
+	public int getNumeroValoraciones() {
+		return numeroValoraciones;
+	}
+
+	public void setNumeroValoraciones(int numeroValoraciones) {
+		this.numeroValoraciones = numeroValoraciones;
+	}
+
+	public double getCalificacionMedia() {
+		return calificacionMedia;
+	}
+
+	public void setCalificacionMedia(double calificacionMedia) {
+		this.calificacionMedia = calificacionMedia;
+	}
+
+	public String getOpinionId() {
+		return opinionId;
+	}
+
+	public void setOpinionId(String opinionId) {
+		this.opinionId = opinionId;
 	}
 
 	@Override

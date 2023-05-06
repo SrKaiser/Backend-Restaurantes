@@ -1,17 +1,21 @@
 package rest;
 
-import retrofit2.Call;
-import retrofit2.http.*;
-
-import modelos.Restaurante;
-import modelos.SolicitudRestaurante;
-import modelos.Plato;
-import modelos.SitioTuristico;
-import modelos.ResumenRestaurante;
-
 import java.util.List;
 
+import modelos.Plato;
+import modelos.Restaurante;
+import modelos.ResumenRestaurante;
+import modelos.SitioTuristico;
+import modelos.SolicitudRestaurante;
+import modelos.Valoracion;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface RestauranteAPI {
 
@@ -44,6 +48,12 @@ public interface RestauranteAPI {
 
     @GET("restaurantes")
     Call<List<ResumenRestaurante>> listarRestaurantes();
+    
+    @POST("/api/opiniones/registrarRecurso/{nombreRecurso}")
+    Call<String> registrarRecurso(@Path("nombreRecurso") String nombreRecurso);
+
+    @GET("/api/opiniones/{opinionId}/valoraciones")
+    Call<List<Valoracion>> obtenerValoraciones(@Path("opinionId") String opinionId);
 
 
 }

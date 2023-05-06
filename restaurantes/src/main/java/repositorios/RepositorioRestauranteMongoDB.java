@@ -40,11 +40,14 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
     }
 
 	@Override
-	public String create(String nombre, double latitud, double longitud, String gestorId) {
+	public String create(String nombre, double latitud, double longitud, String gestorId, String opinionId) {
 	 Document doc = new Document("nombre", nombre)
                 .append("latitud", latitud)
                 .append("longitud", longitud)
-                .append("gestorId", gestorId);
+                .append("gestorId", gestorId)
+                .append("opinionId", opinionId)
+                .append("numeroValoraciones", 0)
+                .append("calificacionMedia", 0.0);
         restauranteCollection.insertOne(doc);
         ObjectId id = doc.getObjectId("_id");
         return id.toHexString();

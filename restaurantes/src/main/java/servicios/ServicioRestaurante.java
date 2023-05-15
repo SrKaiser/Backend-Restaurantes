@@ -19,7 +19,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
 	private ServicioOpinionesRetrofit servicioOpiniones;
 
     public ServicioRestaurante() {
-    	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(IRepositorioRestaurante.class);
+    	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(Restaurante.class);
     	this.servicioOpiniones = new ServicioOpinionesRetrofit();
     }
     

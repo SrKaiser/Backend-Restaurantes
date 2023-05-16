@@ -40,12 +40,12 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
     }
 
 	@Override
-	public String create(String nombre, double latitud, double longitud, String gestorId, String opinionId) {
+	public String create(String nombre, double latitud, double longitud, String gestorId) {
 	 Document doc = new Document("nombre", nombre)
                 .append("latitud", latitud)
                 .append("longitud", longitud)
                 .append("gestorId", gestorId)
-                .append("opinionId", opinionId)
+//                .append("opinionId", opinionId)
                 .append("numeroValoraciones", 0)
                 .append("calificacionMedia", 0.0);
         restauranteCollection.insertOne(doc);
@@ -233,6 +233,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
         try {
             objectId = new ObjectId(idRestaurante);
         } catch (IllegalArgumentException e) {
+        	e.printStackTrace();
             return false;
         }
 
@@ -253,9 +254,17 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante{
                 restaurante.setLatitud(doc.getDouble("latitud"));
                 restaurante.setLongitud(doc.getDouble("longitud"));
                 List<Document> platosDocs = (List<Document>) doc.get("platos");
-                restaurante.setNumeroPlatos(platosDocs.size());
+                if (platosDocs != null) {
+                    restaurante.setNumeroPlatos(platosDocs.size());
+                } else {
+                    restaurante.setNumeroPlatos(0);
+                }
                 List<Document> sitiosTuristicosDocs = (List<Document>) doc.get("sitiosTuristicosDestacados");
-                restaurante.setNumeroSitiosTuristicos(sitiosTuristicosDocs.size());
+                if (sitiosTuristicosDocs != null) {
+                    restaurante.setNumeroSitiosTuristicos(sitiosTuristicosDocs.size());
+                } else {
+                    restaurante.setNumeroSitiosTuristicos(0);
+                }
                 restaurantesList.add(restaurante);
             }
         }

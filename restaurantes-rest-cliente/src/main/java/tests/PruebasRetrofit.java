@@ -19,14 +19,16 @@ public class PruebasRetrofit {
 	static String idRestaurante;
 	static String idRestaurante2;
 	public static void main(String[] args) {
-        System.out.println("Crear restaurante: ");
-        idRestaurante = crearRestaurante(new SolicitudRestaurante("Goiko", 40.123, -3.567));
-//        System.out.println("Crear restaurante McDonalds: ");
-//        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
-		//updateRestaurante();
+        System.out.println("Crear restaurante Goiko: ");
+        idRestaurante = crearRestaurante(new SolicitudRestaurante("Goiko", 40.42039145624014, -3.6996503622016954));
+        System.out.println("Crear restaurante McDonalds: ");
+        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
+        System.out.println("Actualizar restaurante Goiko: ");
+		updateRestaurante();
         System.out.println("Obtener sitios turisticos: ");
 		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
-		//setSitiosTuristicosDestacados(sitios);
+		System.out.println("Establecer sitios turisticos: ");
+		setSitiosTuristicosDestacados(sitios);
 		System.out.println("Añadir Plato 1: ");
 		String nombrePlato = "Plato 1";
 		addPlato(nombrePlato);
@@ -35,14 +37,16 @@ public class PruebasRetrofit {
 		System.out.println("Añadir Plato 2: ");
 		String nombrePlato2 = "Plato 2";
 		addPlato(nombrePlato2);
-//		//updatePlato(nombrePlato2);
+		System.out.println("Actualizar Plato 2: ");
+		updatePlato(nombrePlato2);
 		System.out.println("Obtener restaurante: ");
         obtenerRestaurante();
-//		System.out.println("Borrar restaurante McDonalds: ");
-//        borrarRestaurante();
-//        System.out.println("Listar restaurantes: ");
-//        listarRestaurantes();
-		
+        System.out.println("Listar restaurantes: ");
+        listarRestaurantes();
+        System.out.println("Borrar restaurante Goiko/Burger: ");
+        borrarRestaurante(idRestaurante);
+		System.out.println("Borrar restaurante McDonalds: ");
+        borrarRestaurante(idRestaurante2);
     }
 	
 	public static void obtenerRestaurante() {
@@ -78,7 +82,7 @@ public class PruebasRetrofit {
 	}
 	
 	public static void updateRestaurante() {
-        SolicitudRestaurante restauranteActualizado = new SolicitudRestaurante("McDonalds", 37.25241153058483, -3.6102678802605594);
+        SolicitudRestaurante restauranteActualizado = new SolicitudRestaurante("Burger", 42.347384117579004, -3.699256208170313);
         Call<Boolean> updateRestauranteCall = api.updateRestaurante(idRestaurante, restauranteActualizado);
 
         try {
@@ -158,8 +162,8 @@ public class PruebasRetrofit {
         }
     }
 
-    public static void borrarRestaurante() {
-        Call<Boolean> borrarRestauranteCall = api.borrarRestaurante(idRestaurante2);
+    public static void borrarRestaurante(String id) {
+        Call<Boolean> borrarRestauranteCall = api.borrarRestaurante(id);
 
         try {
             Response<Boolean> response = borrarRestauranteCall.execute();

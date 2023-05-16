@@ -17,12 +17,12 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	private final Map<String, Restaurante> restaurantes = new HashMap<>();
 	
 	@Override
-	public String create(String nombre, double latitud, double longitud, String gestorId, String opinionId) {
+	public String create(String nombre, double latitud, double longitud, String gestorId) {
 		UUID uuid = UUID.randomUUID();
 		String id = uuid.toString();
         Restaurante restaurante = new Restaurante(id, nombre, latitud, longitud);
         restaurante.setGestorId(gestorId);
-        restaurante.setOpinionId(opinionId);
+//        restaurante.setOpinionId(opinionId);
         restaurantes.put(id, restaurante);
         return id;
 	}

@@ -16,21 +16,21 @@ import repositorios.IRepositorioRestaurante;
 public class ServicioRestaurante implements IServicioRestaurante {
 	
 	private IRepositorioRestaurante repositorioRestaurante;
-	private ServicioOpinionesRetrofit servicioOpiniones;
+//	private ServicioOpinionesRetrofit servicioOpiniones;
 
     public ServicioRestaurante() {
     	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(Restaurante.class);
-    	this.servicioOpiniones = new ServicioOpinionesRetrofit();
+//    	this.servicioOpiniones = new ServicioOpinionesRetrofit();
     }
     
     @Override
     public String altaRestaurante(String nombre, double latitud, double longitud) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String gestorId = authentication.getName();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String gestorId = authentication.getName();
 
-        String opinionId = servicioOpiniones.registrarRecurso(nombre);
+//        String opinionId = servicioOpiniones.registrarRecurso(nombre);
         
-        return repositorioRestaurante.create(nombre, latitud, longitud, gestorId, opinionId);
+        return repositorioRestaurante.create(nombre, latitud, longitud, null);
     }
     
     @Override
@@ -78,15 +78,15 @@ public class ServicioRestaurante implements IServicioRestaurante {
         return repositorioRestaurante.findAll();
     }
     
-    @Override
-    public List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante){
-    	Restaurante restaurante = recuperarRestaurante(idRestaurante);
-        if (restaurante != null) {
-            return servicioOpiniones.obtenerValoraciones(restaurante.getOpinionId());
-        }
-        return null;
-
-    }
+//    @Override
+//    public List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante){
+//    	Restaurante restaurante = recuperarRestaurante(idRestaurante);
+//        if (restaurante != null) {
+//            return servicioOpiniones.obtenerValoraciones(restaurante.getOpinionId());
+//        }
+//        return null;
+//
+//    }
 
 	
 

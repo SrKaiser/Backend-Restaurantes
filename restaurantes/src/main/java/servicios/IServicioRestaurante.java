@@ -30,6 +30,6 @@ public interface IServicioRestaurante {
 	
 	List<ResumenRestaurante> recuperarTodosRestaurantes();
 	
-	List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante);
+//	List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante);
 	
 }

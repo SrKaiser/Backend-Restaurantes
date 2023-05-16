@@ -11,10 +11,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
-import excepciones.RestauranteNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,24 +39,20 @@ public class RestauranteControladorRest {
 	
 	private IServicioRestaurante servicioRestaurante = FactoriaServicios.getServicio(IServicioRestaurante.class);
 //	private ServicioOpinionesRetrofit servicioOpiniones = new ServicioOpinionesRetrofit();
+	@Context
+	private UriInfo uriInfo;
     
     @GET
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Recupera un restaurante por ID", response = Restaurante.class)
     @ApiResponses(value = {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Restaurante recuperado correctamente"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // Ejemplo de uso con curl: 
-    // curl -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    public Response obtenerRestaurante(@ApiParam(value = "ID del restaurante a recuperar", required = true) @PathParam("id") String id) {
-        Restaurante restaurante = servicioRestaurante.recuperarRestaurante(id);
-
-        if (restaurante == null) {
-        	throw new RestauranteNotFoundException("Restaurante no encontrado");
-        }
-
-        return Response.ok(restaurante).build();
+    // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    public Response obtenerRestaurante(@ApiParam(value = "ID del restaurante a recuperar", required = true) @PathParam("id") String id) throws Exception {
+        return Response.status(Response.Status.OK).entity(servicioRestaurante.recuperarRestaurante(id)).build();
     }
     
 
@@ -66,8 +63,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X POST -H "Content-Type: application/json" -d '{"nombre": "Goiko", "latitud": 40.42039145624014, "longitud": -3.6996503622016954}' http://localhost:8080/api/restaurantes
-    public Response crearRestaurante(SolicitudRestaurante nuevoRestaurante) {
+    // curl -i -X POST -H "Content-Type: application/json" -d '{"nombre": "Goiko", "latitud": 40.42039145624014, "longitud": -3.6996503622016954}' http://localhost:8080/api/restaurantes
+    public Response crearRestaurante(SolicitudRestaurante nuevoRestaurante) throws Exception {
     	String nombre = nuevoRestaurante.getNombre();
         double latitud = nuevoRestaurante.getLatitud();
         double longitud = nuevoRestaurante.getLongitud();
@@ -91,10 +88,10 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
     public Response updateRestaurante(
         @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
-        SolicitudRestaurante actualizacionRestaurante) {
+        SolicitudRestaurante actualizacionRestaurante) throws Exception {
 
         String nombre = actualizacionRestaurante.getNombre();
         double latitud = actualizacionRestaurante.getLatitud();
@@ -116,8 +113,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Sitios turísticos recuperados correctamente"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
-    public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante) {
+    // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
+    public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante) throws Exception {
         
     	System.out.println(idRestaurante);
     	List<SitioTuristico> sitiosTuristicos = servicioRestaurante.obtenerSitiosTuristicosProximos(idRestaurante);
@@ -137,9 +134,9 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
+    // curl -i -X PUT -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
     public Response setSitiosTuristicosDestacados(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                                                  @ApiParam(value = "Lista de sitios turísticos destacados", required = true) List<SitioTuristico> sitiosTuristicos) {
+                                                  @ApiParam(value = "Lista de sitios turísticos destacados", required = true) List<SitioTuristico> sitiosTuristicos) throws Exception {
         boolean resultado = servicioRestaurante.establecerSitiosTuristicosDestacados(idRestaurante, sitiosTuristicos);
 
         if (!resultado) {
@@ -157,9 +154,9 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X POST -H "Content-Type: application/json" -d '{"nombre": "Plato1", "descripcion": "Descripcion1", "precio": 10.0}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+    // curl -i -X POST -H "Content-Type: application/json" -d '{"nombre": "Plato1", "descripcion": "Descripcion1", "precio": 10.0}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
     public Response addPlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                             @ApiParam(value = "Plato a agregar", required = true) Plato plato) {
+                             @ApiParam(value = "Plato a agregar", required = true) Plato plato) throws Exception {
         boolean resultado = servicioRestaurante.añadirPlato(idRestaurante, plato);
 
         if (!resultado) {
@@ -176,9 +173,9 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Plato eliminado correctamente"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
+    // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
     public Response removePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                                @ApiParam(value = "Nombre del plato a eliminar", required = true) @PathParam("nombrePlato") String nombrePlato) {
+                                @ApiParam(value = "Nombre del plato a eliminar", required = true) @PathParam("nombrePlato") String nombrePlato) throws Exception {
         
     	boolean resultado = servicioRestaurante.borrarPlato(idRestaurante, nombrePlato);
 
@@ -197,9 +194,9 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante o plato no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -X PUT -H "Content-Type: application/json" -d '{"nombre": "nombre", "descripcion": "NuevaDescripcion", "precio": NuevoPrecio}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "nombre", "descripcion": "NuevaDescripcion", "precio": NuevoPrecio}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
     public Response updatePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
-                                Plato plato) {
+                                Plato plato) throws Exception {
         boolean resultado = servicioRestaurante.actualizarPlato(idRestaurante, plato);
 
         if (!resultado) {
@@ -216,8 +213,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Restaurante eliminado correctamente"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    public Response borrarRestaurante(@ApiParam(value = "ID del restaurante a eliminar", required = true) @PathParam("id") String idRestaurante) {
+    // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    public Response borrarRestaurante(@ApiParam(value = "ID del restaurante a eliminar", required = true) @PathParam("id") String idRestaurante) throws Exception {
         boolean resultado = servicioRestaurante.borrarRestaurante(idRestaurante);
 
         if (!resultado) {
@@ -232,8 +229,8 @@ public class RestauranteControladorRest {
     @ApiResponses(value = {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Listado de restaurantes generado correctamente")
     })
-    // curl -X GET http://localhost:8080/api/restaurantes
-    public Response listarRestaurantes() {
+    // curl -i -X GET http://localhost:8080/api/restaurantes
+    public Response listarRestaurantes() throws Exception {
         List<ResumenRestaurante> restaurantesList = servicioRestaurante.recuperarTodosRestaurantes();
         return Response.ok(restaurantesList).build();
     }

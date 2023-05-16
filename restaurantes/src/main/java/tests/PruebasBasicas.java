@@ -12,7 +12,7 @@ import servicios.IServicioRestaurante;
 
 public class PruebasBasicas {
 	public static boolean isTestEnvironment = false;
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		IServicioRestaurante serv = FactoriaServicios.getServicio(IServicioRestaurante.class);
 		// Prueba de alta de restaurantes
 		String id = serv.altaRestaurante("Goiko", 40.42039145624014, -3.6996503622016954);

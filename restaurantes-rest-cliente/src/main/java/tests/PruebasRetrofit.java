@@ -21,32 +21,32 @@ public class PruebasRetrofit {
 	public static void main(String[] args) {
         System.out.println("Crear restaurante Goiko: ");
         idRestaurante = crearRestaurante(new SolicitudRestaurante("Goiko", 40.42039145624014, -3.6996503622016954));
-        System.out.println("Crear restaurante McDonalds: ");
-        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
-        System.out.println("Actualizar restaurante Goiko: ");
-		updateRestaurante();
-        System.out.println("Obtener sitios turisticos: ");
-		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
-		System.out.println("Establecer sitios turisticos: ");
-		setSitiosTuristicosDestacados(sitios);
-		System.out.println("Añadir Plato 1: ");
-		String nombrePlato = "Plato 1";
-		addPlato(nombrePlato);
-		System.out.println("Borrar Plato 1: ");
-		removePlato(nombrePlato);
-		System.out.println("Añadir Plato 2: ");
-		String nombrePlato2 = "Plato 2";
-		addPlato(nombrePlato2);
-		System.out.println("Actualizar Plato 2: ");
-		updatePlato(nombrePlato2);
-		System.out.println("Obtener restaurante: ");
-        obtenerRestaurante();
-        System.out.println("Listar restaurantes: ");
-        listarRestaurantes();
-        System.out.println("Borrar restaurante Goiko/Burger: ");
-        borrarRestaurante(idRestaurante);
-		System.out.println("Borrar restaurante McDonalds: ");
-        borrarRestaurante(idRestaurante2);
+//        System.out.println("Crear restaurante McDonalds: ");
+//        idRestaurante2 = crearRestaurante(new SolicitudRestaurante("McDonalds",  37.25241153058483, -3.6102678802605594));
+//        System.out.println("Actualizar restaurante Goiko: ");
+//		updateRestaurante();
+//        System.out.println("Obtener sitios turisticos: ");
+//		List<SitioTuristico> sitios = obtenerSitiosTuristicosCercanos();
+//		System.out.println("Establecer sitios turisticos: ");
+//		setSitiosTuristicosDestacados(sitios);
+//		System.out.println("Añadir Plato 1: ");
+//		String nombrePlato = "Plato 1";
+//		addPlato(nombrePlato);
+//		System.out.println("Borrar Plato 1: ");
+//		removePlato(nombrePlato);
+//		System.out.println("Añadir Plato 2: ");
+//		String nombrePlato2 = "Plato 2";
+//		addPlato(nombrePlato2);
+//		System.out.println("Actualizar Plato 2: ");
+//		updatePlato(nombrePlato2);
+//		System.out.println("Obtener restaurante: ");
+//        obtenerRestaurante();
+//        System.out.println("Listar restaurantes: ");
+//        listarRestaurantes();
+//        System.out.println("Borrar restaurante Goiko/Burger: ");
+//        borrarRestaurante(idRestaurante);
+//		System.out.println("Borrar restaurante McDonalds: ");
+//        borrarRestaurante(idRestaurante2);
     }
 	
 	public static void obtenerRestaurante() {

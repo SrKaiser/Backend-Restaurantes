@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import excepciones.EntidadNoEncontrada;
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -28,13 +29,8 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	}
 
 	@Override
-	public boolean update(String idRestaurante, String nombre, double latitud, double longitud) {
-		Restaurante restaurante = restaurantes.get(idRestaurante);
-
-	    if (restaurante == null) {
-	        return false;
-	    }
-
+	public boolean update(String idRestaurante, String nombre, double latitud, double longitud) throws EntidadNoEncontrada {
+		Restaurante restaurante = findById(idRestaurante);
 	    restaurante.setNombre(nombre);
 	    restaurante.setLatitud(latitud);
 	    restaurante.setLongitud(longitud);
@@ -44,70 +40,48 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	}
 	
 	@Override
-	public List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) {
+	public List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) throws EntidadNoEncontrada {
 		ServicioSitiosTuristicos servSitiosTuristicos = new ServicioSitiosTuristicos();
-	    Restaurante r = restaurantes.get(idRestaurante);
+		Restaurante restaurante = findById(idRestaurante);
 	    List<SitioTuristico> listaSitiosTuristicos = new LinkedList<>();
-
-	    if (r == null) {
-	        return listaSitiosTuristicos;
-	    }
-
 	    try {
-	        listaSitiosTuristicos = servSitiosTuristicos.obtenerSitios(r.getLatitud(), r.getLongitud());
+	        listaSitiosTuristicos = servSitiosTuristicos.obtenerSitios(restaurante.getLatitud(), restaurante.getLongitud());
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-
 	    return listaSitiosTuristicos;
 	}
 	
 	@Override
-	public boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) {
-	    Restaurante restaurante = restaurantes.get(idRestaurante);
-
-	    if (restaurante == null) {
-	        return false;
-	    }
-
+	public boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) throws EntidadNoEncontrada {
+		Restaurante restaurante = findById(idRestaurante);
 	    restaurante.setSitiosTuristicos(sitiosTuristicos);
 	    return true;
 	}
 
 	@Override
-	public boolean addPlato(String idRestaurante, Plato plato) {
-	    Restaurante restaurante = restaurantes.get(idRestaurante);
-
-	    if (restaurante == null) {
-	        return false;
-	    }
-
+	public boolean addPlato(String idRestaurante, Plato plato) throws EntidadNoEncontrada {
+		Restaurante restaurante = findById(idRestaurante);
 	    restaurante.addPlato(plato);
 	    return true;
 	}
 
 	@Override
-	public boolean removePlato(String idRestaurante, String nombrePlato) {
-	    Restaurante restaurante = restaurantes.get(idRestaurante);
-
-	    if (restaurante == null) {
-	        return false;
-	    }
-
+	public boolean removePlato(String idRestaurante, String nombrePlato) throws EntidadNoEncontrada {
+		Restaurante restaurante = findById(idRestaurante);
 	    List<Plato> platos = restaurante.getPlatos();
 	    boolean removed = platos.removeIf(plato -> plato.getNombre().equals(nombrePlato));
 	    restaurante.setPlatos(platos);
+	    if (!removed) {
+	    	throw new EntidadNoEncontrada("No se encontró el plato '" + nombrePlato
+					+ "' en el restaurante con el idRestaurante: " + idRestaurante);
+	    }
 	    return removed;
 	}
 
 	@Override
-	public boolean updatePlato(String idRestaurante, Plato plato) {
-	    Restaurante restaurante = restaurantes.get(idRestaurante);
-
-	    if (restaurante == null) {
-	        return false;
-	    }
-
+	public boolean updatePlato(String idRestaurante, Plato plato) throws EntidadNoEncontrada {
+		Restaurante restaurante = findById(idRestaurante);
 	    List<Plato> platos = restaurante.getPlatos();
 	    boolean updated = false;
 
@@ -118,24 +92,33 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	            break;
 	        }
 	    }
-
 	    if (updated) {
 	        restaurante.setPlatos(platos);
 	    }
-
+	    if (!updated) {
+	    	throw new EntidadNoEncontrada("No se encontró el plato '" + plato.getNombre()
+					+ "' en el restaurante con el idRestaurante: " + idRestaurante);
+	    }
 	    return updated;
 	}
 
 
 	@Override
-	public Restaurante findById(String idRestaurante) {
+	public Restaurante findById(String idRestaurante) throws EntidadNoEncontrada {
+		Restaurante restaurante = restaurantes.get(idRestaurante);
+		if (restaurante == null) {
+			throw new EntidadNoEncontrada(idRestaurante + " no existe en el repositorio");
+	    }
 	    return restaurantes.get(idRestaurante);
 	}
 
 	@Override
-	public boolean delete(String idRestaurante) {
-	    Restaurante removed = restaurantes.remove(idRestaurante);
-	    return removed != null;
+	public boolean delete(String idRestaurante) throws EntidadNoEncontrada {
+	    Restaurante restaurante = restaurantes.remove(idRestaurante);
+	    if (restaurante == null) {
+			throw new EntidadNoEncontrada(idRestaurante + " no existe en el repositorio");
+	    }
+	    return restaurante != null;
 	}
 
 	@Override

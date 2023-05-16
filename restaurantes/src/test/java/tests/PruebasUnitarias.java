@@ -1,11 +1,14 @@
 package tests;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import excepciones.EntidadNoEncontrada;
+import excepciones.RepositorioException;
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -22,9 +25,11 @@ public class PruebasUnitarias {
 		PruebasBasicas.isTestEnvironment = true;
 		servicio = FactoriaServicios.getServicio(IServicioRestaurante.class);
 	}
+	
+	/* Test de funciones exitosas */
 
 	@Test
-    public void testAltaRestaurante() {
+    public void testAltaRestaurante() throws RepositorioException, EntidadNoEncontrada {
         String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
         Restaurante restaurante = servicio.recuperarRestaurante(id);
         Assert.assertNotNull(restaurante);
@@ -34,7 +39,7 @@ public class PruebasUnitarias {
     }
 	
 	@Test
-    public void testActualizarRestaurante() {
+    public void testActualizarRestaurante() throws RepositorioException, EntidadNoEncontrada {
         String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
         boolean resultado = servicio.actualizarRestaurante(id, "Restaurante Actualizado", 30.0, 40.0);
         Assert.assertTrue(resultado);
@@ -45,16 +50,16 @@ public class PruebasUnitarias {
     }
 	
 	 @Test
-	    public void testFindSitiosTuristicosProximos() {
-	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	    public void testFindSitiosTuristicosProximos() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 40.42039145624014, -3.6996503622016954);
 	        List<SitioTuristico> sitiosTuristicos = servicio.obtenerSitiosTuristicosProximos(id);
 	        Assert.assertNotNull(sitiosTuristicos);
 	    }
 
 	    @Test
-	    public void testSetSitiosTuristicosDestacados() {
-	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
-	        List<SitioTuristico> sitiosTuristicos = servicio.obtenerSitiosTuristicosProximos(id);;
+	    public void testSetSitiosTuristicosDestacados() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 40.42039145624014, -3.6996503622016954);
+	        List<SitioTuristico> sitiosTuristicos = servicio.obtenerSitiosTuristicosProximos(id);
 	        boolean resultado = servicio.establecerSitiosTuristicosDestacados(id, sitiosTuristicos);
 	        Assert.assertTrue(resultado);
 	        Restaurante restaurante = servicio.recuperarRestaurante(id);
@@ -62,7 +67,7 @@ public class PruebasUnitarias {
 	    }
 	    
 	    @Test
-	    public void testAddPlato() {
+	    public void testAddPlato() throws RepositorioException, EntidadNoEncontrada {
 	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
 	        Plato plato = new Plato("Plato Test", "Descripcion Test", 10.0);
 	        boolean resultado = servicio.añadirPlato(id, plato);
@@ -76,7 +81,7 @@ public class PruebasUnitarias {
 
 	    
 	    @Test
-	    public void testRemovePlato() {
+	    public void testRemovePlato() throws RepositorioException, EntidadNoEncontrada {
 	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
 	        Plato plato = new Plato("Plato Test", "Descripcion Test", 10.0);
 	        servicio.añadirPlato(id, plato);
@@ -88,7 +93,7 @@ public class PruebasUnitarias {
 	    }
 
 	    @Test
-	    public void testUpdatePlato() {
+	    public void testUpdatePlato() throws RepositorioException, EntidadNoEncontrada {
 	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
 	        Plato plato = new Plato("Plato Test", "Descripcion Test", 10.0);
 	        servicio.añadirPlato(id, plato);
@@ -103,7 +108,7 @@ public class PruebasUnitarias {
 	    }
 
 	    @Test
-	    public void testListarRestaurantes() {
+	    public void testListarRestaurantes() throws RepositorioException, EntidadNoEncontrada {
 	        String id1 = servicio.altaRestaurante("Restaurante 1", 10.0, 20.0);
 	        servicio.añadirPlato(id1, new Plato("Plato Test 1", "Descripcion Test 1", 10.0));
 	        String id2 = servicio.altaRestaurante("Restaurante 2", 30.0, 40.0);
@@ -117,5 +122,115 @@ public class PruebasUnitarias {
 	        Assert.assertEquals(1, restaurantes.get(1).getNumeroPlatos());
 	        Assert.assertEquals(0, restaurantes.get(1).getNumeroSitiosTuristicos());
 	    }
+	    
+
+		/* Test de funciones que lanzan excepciones */
+	    
+	    @Test(expected = RepositorioException.class)
+	    public void testAltaRestauranteNombreVacio() throws RepositorioException, EntidadNoEncontrada {
+	        servicio.altaRestaurante("", 10.0, 20.0);
+	    }
+
+	    @Test(expected = RepositorioException.class)
+	    public void testAltaRestauranteLatitudInvalida() throws RepositorioException, EntidadNoEncontrada {
+	        servicio.altaRestaurante("Restaurante Test", 200.0, 20.0);
+	    }
+
+	    @Test(expected = RepositorioException.class)
+	    public void testAltaRestauranteLongitudInvalida() throws RepositorioException, EntidadNoEncontrada {
+	        servicio.altaRestaurante("Restaurante Test", 10.0, 200.0);
+	    }
+
+	    @Test(expected = RepositorioException.class)
+	    public void testActualizarRestauranteNombreVacio() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        servicio.actualizarRestaurante(id, "", 30.0, 40.0);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testActualizarRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        servicio.actualizarRestaurante("ID inexistente", "Nuevo Nombre", 50.0, 60.0);
+	    }
+
+
+	    @Test(expected = RepositorioException.class)
+	    public void testActualizarRestauranteLatitudInvalida() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        servicio.actualizarRestaurante(id, "Restaurante Actualizado", 200.0, 40.0);
+	    }
+
+	    @Test(expected = RepositorioException.class)
+	    public void testActualizarRestauranteLongitudInvalida() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        servicio.actualizarRestaurante(id, "Restaurante Actualizado", 30.0, 200.0);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testObtenerSitiosTuristicosProximosRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        servicio.obtenerSitiosTuristicosProximos("ID inexistente");
+	    }
+
+	    @Test(expected = RepositorioException.class)
+	    public void testEstablecerSitiosTuristicosDestacadosListaVacia() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        servicio.establecerSitiosTuristicosDestacados(id, new ArrayList<>());
+	    }
+	    
+	    @Test(expected = RepositorioException.class)
+	    public void testEstablecerSitiosTuristicosDestacadosTituloVacio() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        List<SitioTuristico> sitiosTuristicos = new ArrayList<>();
+	        sitiosTuristicos.add(new SitioTuristico("", "Resumen Test", null, null, null));
+	        servicio.establecerSitiosTuristicosDestacados(id, sitiosTuristicos);
+	    }
+	    
+	    @Test(expected = RepositorioException.class)
+	    public void testEstablecerSitiosTuristicosDestacadosResumenVacio() throws RepositorioException, EntidadNoEncontrada {
+	        String id = servicio.altaRestaurante("Restaurante Test", 10.0, 20.0);
+	        List<SitioTuristico> sitiosTuristicos = new ArrayList<>();
+	        sitiosTuristicos.add(new SitioTuristico("Titulo Test", "", null, null, null));
+	        servicio.establecerSitiosTuristicosDestacados(id, sitiosTuristicos);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testEstablecerSitiosTuristicosDestacadosRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        List<SitioTuristico> sitiosTuristicos = new ArrayList<>();
+	        sitiosTuristicos.add(new SitioTuristico("Titulo Test", "Resumen Test", null, null, null));
+	        servicio.establecerSitiosTuristicosDestacados("ID inexistente", sitiosTuristicos);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testAñadirPlatoRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        Plato plato = new Plato("Plato Test", "Descripción Test", 10.0);
+	        servicio.añadirPlato("ID inexistente", plato);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testRemovePlatoRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        servicio.borrarPlato("ID inexistente", "Plato Test");
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testUpdatePlatoRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	        Plato plato = new Plato("Plato Test", "Descripción Test", 10.0);
+	        servicio.actualizarPlato("ID inexistente", plato);
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testFindByIdRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	    	servicio.recuperarRestaurante("ID inexistente");
+	    }
+	    
+	    @Test(expected = EntidadNoEncontrada.class)
+	    public void testDeleteRestauranteNoEncontrado() throws EntidadNoEncontrada, RepositorioException {
+	    	servicio.borrarRestaurante("ID inexistente");
+	    }
+
+
+
+
+
+
+
 
 }

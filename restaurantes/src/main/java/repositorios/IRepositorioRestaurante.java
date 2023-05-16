@@ -2,6 +2,8 @@ package repositorios;
 
 import java.util.List;
 
+import excepciones.EntidadNoEncontrada;
+import excepciones.RepositorioException;
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -9,24 +11,24 @@ import modelos.SitioTuristico;
 
 public interface IRepositorioRestaurante{
 	
-	String create(String nombre, double latitud, double longitud, String gestorId);
+	String create(String nombre, double latitud, double longitud, String gestorId) throws RepositorioException;
     
-	Restaurante findById(String id);
+	Restaurante findById(String id) throws RepositorioException, EntidadNoEncontrada;
     
-	List<ResumenRestaurante> findAll();
+	List<ResumenRestaurante> findAll() throws RepositorioException;
     
-	boolean update(String idRestaurante, String nombre, double latitud, double longitud);
+	boolean update(String idRestaurante, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada;
     
-	boolean delete(String id);
+	boolean delete(String id) throws RepositorioException, EntidadNoEncontrada;
 	
-	List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante);
+	List<SitioTuristico> findSitiosTuristicosProximos(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 	
-    boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos);
+    boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) throws RepositorioException, EntidadNoEncontrada;
     
-    boolean addPlato(String idRestaurante, Plato plato);
+    boolean addPlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada;
     
-    boolean removePlato(String idRestaurante, String nombrePlato);
+    boolean removePlato(String idRestaurante, String nombrePlato) throws RepositorioException, EntidadNoEncontrada;
     
-    boolean updatePlato(String idRestaurante, Plato plato);
+    boolean updatePlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada;
 
 }

@@ -2,6 +2,8 @@ package servicios;
 
 import java.util.List;
 
+import excepciones.EntidadNoEncontrada;
+import excepciones.RepositorioException;
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -10,25 +12,25 @@ import modelos.Valoracion;
 
 public interface IServicioRestaurante {
 	
-	public String altaRestaurante(String nombre, double latitud, double longitud);
+	public String altaRestaurante(String nombre, double latitud, double longitud) throws RepositorioException;
 	
-	boolean actualizarRestaurante(String id, String nombre, double latitud, double longitud);
+	boolean actualizarRestaurante(String id, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada;
 	
-	List<SitioTuristico> obtenerSitiosTuristicosProximos(String idRestaurante);
+	List<SitioTuristico> obtenerSitiosTuristicosProximos(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 	
-	boolean establecerSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos);
+	boolean establecerSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) throws RepositorioException, EntidadNoEncontrada;
 	
-	boolean añadirPlato(String idRestaurante, Plato plato);
+	boolean añadirPlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada;
 	
-	boolean borrarPlato(String idRestaurante, String nombrePlato);
+	boolean borrarPlato(String idRestaurante, String nombrePlato) throws RepositorioException, EntidadNoEncontrada;
 	
-	boolean actualizarPlato(String idRestaurante, Plato plato);
+	boolean actualizarPlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada;
 	
-	Restaurante recuperarRestaurante(String idRestaurante);
+	Restaurante recuperarRestaurante(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 	
-	boolean borrarRestaurante(String idRestaurante);
+	boolean borrarRestaurante(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 	
-	List<ResumenRestaurante> recuperarTodosRestaurantes();
+	List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException;
 	
 //	List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante);
 	

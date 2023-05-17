@@ -43,9 +43,58 @@ namespace Opinion.Servicio
                 opinion.Valoraciones.RemoveAll(v => v.CorreoElectronico.Equals(valoracion.CorreoElectronico));
                 opinion.AddValoracion(valoracion);
                 _repositorioOpinion.AddValoracion(idOpinion, valoracion);
+
+                // Notificar evento reserva creada
+                        
+                // 1. Crear el evento
+            
+                JObject evento = new JObject();
+                evento["idOpinion"] = opinion.Id;
+                evento["valoracion"] = valoracion.Valor;
+                evento["numeroValoraciones"] = opinion.NumeroValoraciones;
+                evento["calificacionMedia"] = opinion.CalificacionMedia;
+                
+                // 2. Notificarlo
+                NotificarEvento(evento)
+
                 return true;
             }
+            
             return false;
+        }
+
+        
+        protected void NotificarEvento(JObject evento)
+        {
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    Uri = new Uri("amqps://edzrfeij:KHQQWPWgL4xfzLdyGf8kazZ8XWrxNm6H@crow.rmq.cloudamqp.com/edzrfeij")
+                };
+
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    /** Declaración del Exchange **/
+                    // FIXME: la declaración del exchange debería hacerse una sola vez en el constructor
+                    var exchangeName = "evento.nueva.valoracion";
+                    bool durable = true;
+                    channel.ExchangeDeclare(exchangeName, "fanout", durable);
+
+                    /** Envío del mensaje **/
+                    var json = JsonConvert.SerializeObject(evento);
+
+                    var basicProperties = channel.CreateBasicProperties();
+                    basicProperties.ContentType = "application/json";
+
+                    channel.BasicPublish(exchangeName, routingKey: "", basicProperties, body: Encoding.UTF8.GetBytes(json));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public OpinionModelo ObtenerOpinion(string idOpinion)

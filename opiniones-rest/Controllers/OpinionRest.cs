@@ -47,8 +47,7 @@ namespace OpinionApi.Controllers
             {
                 return NotFound();
             }
-
-            // Suponiendo que tu modelo Opinion tiene una propiedad List<Valoracion> llamada Valoraciones
+            
             return entidad.Valoraciones;
         }
 

@@ -1,6 +1,10 @@
 package servicios;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
+import javax.json.JsonObject;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,12 +18,89 @@ import modelos.SitioTuristico;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
+
 public class ServicioRestaurante implements IServicioRestaurante {
 	
 	private IRepositorioRestaurante repositorioRestaurante;
 
     public ServicioRestaurante() {
     	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(Restaurante.class);
+    	
+    	// registro del consumidor de eventos
+		
+    			try {
+    			ConnectionFactory factory = new ConnectionFactory();
+    			
+    			// TODO uri
+    			factory.setUri("uri");
+    			
+    		    Connection connection = factory.newConnection();
+
+    		    Channel channel = connection.createChannel();
+    		    
+    		    /** Declaración de la cola y enlace con el exchange **/
+
+    			final String exchangeName = "evento.nueva.valoracion";
+    			final String queueName = "valoracion-queue";
+    			final String bindingKey = "";
+
+    			boolean durable = true;
+    			boolean exclusive = false;
+    			boolean autodelete = false;
+    			Map<String, Object> properties = null; // sin propiedades
+    			channel.queueDeclare(queueName, durable, exclusive, autodelete, properties);
+
+    			channel.queueBind(queueName, exchangeName, bindingKey);
+    		    
+    			/** Configuración del consumidor **/
+    			
+    			boolean autoAck = false;
+    			
+    			String etiquetaConsumidor = "servicio-agendas";
+    			
+    			// Consumidor push
+    			
+    			channel.basicConsume(queueName, autoAck, etiquetaConsumidor, 
+    			  
+    			  new DefaultConsumer(channel) {
+    			    @Override
+    			    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+    			            byte[] body) throws IOException {
+    			        
+    			        
+    			        long deliveryTag = envelope.getDeliveryTag();
+
+    			        String contenido = new String(body);
+    			        
+    					ObjectMapper mapper = new ObjectMapper(); // Jackson
+    					
+//    					JsonObject evento = mapper.readValue(contenido, EventoReservaCreada.class);
+//    				    
+//    				    // Procesamos el evento
+//    				    Cita cita = new Cita();
+//    				    cita.setTitulo(evento.getTitulo());
+//    				    cita.setDescripcion(evento.getDescripcion());
+//    				    
+//    				    for (String usuario : evento.getUsuarios()) {
+//    				    	citas.putIfAbsent(usuario, new LinkedList<>());
+//    				    	citas.get(usuario).add(cita);			    	
+//    				    }
+    			        
+    			        // Confirma el procesamiento
+    			        channel.basicAck(deliveryTag, false);
+    			    }
+    			});
+    			} catch (Exception e) {
+    				throw new RuntimeException(e);
+    			}
+    	
     }
     
     @Override

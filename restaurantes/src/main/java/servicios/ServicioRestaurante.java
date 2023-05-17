@@ -1,29 +1,25 @@
 package servicios;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import excepciones.EntidadNoEncontrada;
 import excepciones.RepositorioException;
-
-import java.util.List;
-
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import modelos.Valoracion;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	
 	private IRepositorioRestaurante repositorioRestaurante;
-//	private ServicioOpinionesRetrofit servicioOpiniones;
 
     public ServicioRestaurante() {
     	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(Restaurante.class);
-//    	this.servicioOpiniones = new ServicioOpinionesRetrofit();
     }
     
     @Override
@@ -37,12 +33,12 @@ public class ServicioRestaurante implements IServicioRestaurante {
 		if (longitud < -180 || longitud > 180) {
 			throw new RepositorioException("La longitud debe estar entre -180 y 180");
 		}
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String gestorId = authentication.getName();
-
-//        String opinionId = servicioOpiniones.registrarRecurso(nombre);
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String gestorId = authentication.getName();	
+		return repositorioRestaurante.create(nombre, latitud, longitud, gestorId);
+	
         
-        return repositorioRestaurante.create(nombre, latitud, longitud, null);
     }
     
     @Override
@@ -77,6 +73,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
 	            throw new RepositorioException("El resumen del sitio turístico no puede ser null o vacío");
 	        }
 	    }
+	    
     	return repositorioRestaurante.setSitiosTuristicosDestacados(idRestaurante, sitiosTuristicos);
     }
     
@@ -91,7 +88,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
 	    if (plato.getPrecio() <= 0) {
 	        throw new RepositorioException("El precio del plato debe ser mayor que 0");
 	    }
-
+	   
        return repositorioRestaurante.addPlato(idRestaurante, plato);
     }
     
@@ -100,7 +97,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     	if (nombrePlato == null || nombrePlato.trim().isEmpty()) {
 			throw new RepositorioException("El nombre del plato no puede ser null o vacío");
 		}
-    	
+    
         return repositorioRestaurante.removePlato(idRestaurante, nombrePlato);
     }
     
@@ -133,17 +130,4 @@ public class ServicioRestaurante implements IServicioRestaurante {
     public List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException {
         return repositorioRestaurante.findAll();
     }
-    
-//    @Override
-//    public List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante){
-//    	Restaurante restaurante = recuperarRestaurante(idRestaurante);
-//        if (restaurante != null) {
-//            return servicioOpiniones.obtenerValoraciones(restaurante.getOpinionId());
-//        }
-//        return null;
-//
-//    }
-
-	
-
 }

@@ -1,7 +1,8 @@
-package rest;
+	package rest;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import io.swagger.annotations.Api;
@@ -26,10 +28,11 @@ import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import modelos.SolicitudRestaurante;
-import modelos.Valoracion;
+import rest.seguridad.AvailableRoles;
+import rest.seguridad.Secured;
 import servicios.FactoriaServicios;
 import servicios.IServicioRestaurante;
-//import servicios.ServicioOpinionesRetrofit;
+
 
 @Api
 @Path("restaurantes")
@@ -38,12 +41,16 @@ import servicios.IServicioRestaurante;
 public class RestauranteControladorRest {
 	
 	private IServicioRestaurante servicioRestaurante = FactoriaServicios.getServicio(IServicioRestaurante.class);
-//	private ServicioOpinionesRetrofit servicioOpiniones = new ServicioOpinionesRetrofit();
 	@Context
 	private UriInfo uriInfo;
+	@Context
+	private SecurityContext securityContext;
+	@Context
+    private HttpServletRequest request;
     
     @GET
     @Path("/{id}")
+    @Secured({AvailableRoles.GESTOR, AvailableRoles.CLIENTE})
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Recupera un restaurante por ID", response = Restaurante.class)
     @ApiResponses(value = {
@@ -57,6 +64,7 @@ public class RestauranteControladorRest {
     
 
     @POST
+    @Secured(AvailableRoles.GESTOR)
     @ApiOperation(value = "Añade un nuevo restaurante", response = String.class)
     @ApiResponses(value = {
         @ApiResponse(code = HttpServletResponse.SC_CREATED, message = "Restaurante creado correctamente"),
@@ -75,11 +83,19 @@ public class RestauranteControladorRest {
             return Response.status(Response.Status.BAD_REQUEST).entity("Solicitud incorrecta").build();
         }
         else {
-            return Response.status(Response.Status.CREATED).entity(id).build();
+        	// "X-Forwarded-Host" contiene la URL original de la pasarela
+            String pasarelaUrl = request.getHeader("X-Forwarded-Host");
+
+            // URL del nuevo restaurante utilizando la URL de la pasarela
+            String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
+
+            return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
+//            return Response.status(Response.Status.CREATED).entity(id).build();
         }
     }
     
     @PUT
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}/update-restaurante")
     @ApiOperation(value = "Actualiza un restaurante por ID", response = String.class)
     @ApiResponses(value = {
@@ -107,6 +123,7 @@ public class RestauranteControladorRest {
     }
     
     @GET
+    @Secured({AvailableRoles.GESTOR, AvailableRoles.CLIENTE})
     @Path("/{id}/sitios-turisticos")
     @ApiOperation(value = "Recupera los sitios turísticos cercanos a un restaurante", response = SitioTuristico.class, responseContainer = "List")
     @ApiResponses(value = {
@@ -127,6 +144,7 @@ public class RestauranteControladorRest {
     }
     
     @PUT
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}/sitios-turisticos")
     @ApiOperation(value = "Establece los sitios turísticos destacados de un restaurante", response = Boolean.class)
     @ApiResponses(value = {
@@ -147,6 +165,7 @@ public class RestauranteControladorRest {
     }
 
     @POST
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}/platos")
     @ApiOperation(value = "Agrega un plato a un restaurante", response = Boolean.class)
     @ApiResponses(value = {
@@ -167,6 +186,7 @@ public class RestauranteControladorRest {
     }
     
     @DELETE
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}/platos/{nombrePlato}")
     @ApiOperation(value = "Elimina un plato de un restaurante", response = Boolean.class)
     @ApiResponses(value = {
@@ -187,6 +207,7 @@ public class RestauranteControladorRest {
     }
     
     @PUT
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}/update-plato")
     @ApiOperation(value = "Actualiza un plato de un restaurante", response = Boolean.class)
     @ApiResponses(value = {
@@ -207,6 +228,7 @@ public class RestauranteControladorRest {
     }
 
     @DELETE
+    @Secured(AvailableRoles.GESTOR)
     @Path("/{id}")
     @ApiOperation(value = "Elimina un restaurante por ID", response = Boolean.class)
     @ApiResponses(value = {
@@ -225,56 +247,16 @@ public class RestauranteControladorRest {
     }
     
     @GET
+    @Secured({AvailableRoles.GESTOR, AvailableRoles.CLIENTE})
     @ApiOperation(value = "Lista todos los restaurantes", response = ResumenRestaurante.class, responseContainer = "List")
     @ApiResponses(value = {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Listado de restaurantes generado correctamente")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes
+    // curl -i -X GET -H "Authorization: Bearer <token>" http://localhost:8090/restaurantes
     public Response listarRestaurantes() throws Exception {
         List<ResumenRestaurante> restaurantesList = servicioRestaurante.recuperarTodosRestaurantes();
+        
         return Response.ok(restaurantesList).build();
     }
-    
-//    @POST
-//    @Path("/registrarOpinion")
-//    @ApiOperation(value = "Registra un nuevo recurso en el servicio de opiniones", response = String.class)
-//    @ApiResponses(value = {
-//        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Recurso registrado correctamente"),
-//        @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Error al registrar el recurso")
-//    })
-//    public Response registrarRecurso(String nombreRecurso) {
-//        String opinionId = servicioOpiniones.registrarRecurso(nombreRecurso);
-//        if (opinionId != null) {
-//            return Response.ok(opinionId).build();
-//        } else {
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
-//    @GET
-//    @Path("/{idRestaurante}/valoraciones")
-//    @ApiOperation(value = "Obtiene las valoraciones de un restaurante", response = Valoracion.class, responseContainer = "List")
-//    @ApiResponses(value = {
-//        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Valoraciones obtenidas correctamente"),
-//        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
-//    })
-//    public Response obtenerValoraciones(@ApiParam(value = "ID del restaurante", required = true) @PathParam("idRestaurante") String idRestaurante) {
-//        Restaurante restaurante = servicioRestaurante.recuperarRestaurante(idRestaurante);
-//        if (restaurante != null) {
-//            String idOpinion = restaurante.getOpinionId();
-//            List<Valoracion> valoraciones = servicioOpiniones.obtenerValoraciones(idOpinion);
-//            if (valoraciones != null) {
-//                return Response.ok(valoraciones).build();
-//            } else {
-//                return Response.status(Response.Status.NOT_FOUND).build();
-//            }
-//        } else {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-//    }
-
-
-
-
-
 }

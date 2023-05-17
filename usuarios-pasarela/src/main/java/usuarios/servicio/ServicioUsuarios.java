@@ -6,6 +6,7 @@ import repositorio.EntidadNoEncontrada;
 import repositorio.FactoriaRepositorios;
 import repositorio.Repositorio;
 import repositorio.RepositorioException;
+import usuarios.modelo.Rol;
 import usuarios.modelo.Usuario;
 
 public class ServicioUsuarios implements IServicioUsuarios {
@@ -35,6 +36,13 @@ public class ServicioUsuarios implements IServicioUsuarios {
 		
 		return resultado;
 	}
+	
+	@Override
+	public Rol getRol(String oauthId) throws RepositorioException, EntidadNoEncontrada {
+	    Usuario usuario = findByOAuthId(oauthId);
+	    return usuario.getRol();
+	}
+
 	
 	@Override
 	public List<Usuario> findAll() throws RepositorioException {

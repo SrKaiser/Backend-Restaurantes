@@ -37,6 +37,22 @@ namespace OpinionApi.Controllers
             return entidad;
         }
 
+        [HttpGet("{idOpinion}/valoraciones")]
+        // curl -X GET https://localhost:7054/api/opiniones/{idOpinion}/valoraciones
+        public ActionResult<List<Valoracion>> GetValoraciones(string idOpinion)
+        {
+            var entidad = _servicio.ObtenerOpinion(idOpinion);
+
+            if (entidad == null)
+            {
+                return NotFound();
+            }
+
+            // Suponiendo que tu modelo Opinion tiene una propiedad List<Valoracion> llamada Valoraciones
+            return entidad.Valoraciones;
+        }
+
+
         [HttpPost("registrarRecurso/{nombreRecurso}")]
         // curl -X POST https://localhost:7054/api/opiniones/registrarRecurso/{nombreRecurso}
         public ActionResult<string> Create([FromRoute] string nombreRecurso)

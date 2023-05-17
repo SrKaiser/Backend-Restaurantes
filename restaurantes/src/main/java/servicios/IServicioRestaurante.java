@@ -8,7 +8,6 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
-import modelos.Valoracion;
 
 public interface IServicioRestaurante {
 	
@@ -32,6 +31,5 @@ public interface IServicioRestaurante {
 	
 	List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException;
 	
-//	List<Valoracion> obtenerValoracionesRestaurante(String idRestaurante);
 	
 }

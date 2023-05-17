@@ -25,7 +25,8 @@ public class SecuritySuccessHandler implements AuthenticationSuccessHandler {
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    @SuppressWarnings("unused")
+	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	
 	@Override

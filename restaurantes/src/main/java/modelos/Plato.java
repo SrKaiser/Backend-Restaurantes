@@ -1,5 +1,7 @@
 package modelos;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Plato {
@@ -48,6 +50,24 @@ public class Plato {
 	@Override
 	public String toString() {
 		return "Plato [nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(descripcion, nombre, precio);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Plato other = (Plato) obj;
+		return Objects.equals(descripcion, other.descripcion) && Objects.equals(nombre, other.nombre)
+				&& Double.doubleToLongBits(precio) == Double.doubleToLongBits(other.precio);
 	}
 	
 	

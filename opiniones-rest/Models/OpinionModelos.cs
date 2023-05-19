@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-
-
 namespace Opinion.Modelo
 {
     public class OpinionModelo

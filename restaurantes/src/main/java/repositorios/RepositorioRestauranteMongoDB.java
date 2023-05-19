@@ -213,6 +213,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		try {
 			objectId = new ObjectId(idRestaurante);
 		} catch (IllegalArgumentException e) {
+
 			throw new RepositorioException("El ID proporcionado no es válido", e);
 		}
 
@@ -226,10 +227,15 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		restaurante.setNombre(doc.getString("nombre"));
 		restaurante.setLatitud(doc.getDouble("latitud"));
 		restaurante.setLongitud(doc.getDouble("longitud"));
-		restaurante.setNumeroValoraciones(doc.getInteger("numeroValoraciones"));
-		restaurante.setGestorId(doc.getString("idGestor"));
-		restaurante.setOpinionId(doc.getString("idOpinion"));
-		restaurante.setCalificacionMedia(doc.getDouble("calificacionMedia"));
+		String idOpinion = doc.getString("idOpinion");
+		if (idOpinion != null)
+		{
+			restaurante.setNumeroValoraciones(doc.getInteger("numeroValoraciones"));
+			restaurante.setGestorId(doc.getString("idGestor"));
+			restaurante.setOpinionId(doc.getString("idOpinion"));
+			restaurante.setCalificacionMedia(doc.getDouble("calificacionMedia"));
+		}
+
 
 		List<Plato> platos = new ArrayList<>();
 		List<Document> platosDocs = (List<Document>) doc.get("platos");
@@ -260,6 +266,57 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		}
 		restaurante.setSitiosTuristicos(sitiosTuristicos);
 		return restaurante;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Restaurante findByIdOpinion(String idOpinion) throws RepositorioException, EntidadNoEncontrada {
+		if (idOpinion == null || idOpinion.trim().isEmpty()) {
+	        throw new IllegalArgumentException("El ID de opinión proporcionado no es válido");
+	    }
+		 Document doc = restauranteCollection.find(Filters.eq("idOpinion", idOpinion)).first();
+		    if (doc == null) {
+		        throw new EntidadNoEncontrada("No se encontró ningún restaurante con el idOpinion " + idOpinion);
+		    }
+		    Restaurante restaurante = new Restaurante();
+		    restaurante.setId(doc.getObjectId("_id").toString());
+		    restaurante.setNombre(doc.getString("nombre"));
+		    restaurante.setLatitud(doc.getDouble("latitud"));
+		    restaurante.setLongitud(doc.getDouble("longitud"));
+		    restaurante.setNumeroValoraciones(doc.getInteger("numeroValoraciones"));
+		    restaurante.setGestorId(doc.getString("idGestor"));
+		    restaurante.setOpinionId(doc.getString("idOpinion"));
+		    restaurante.setCalificacionMedia(doc.getDouble("calificacionMedia"));
+
+		    List<Plato> platos = new ArrayList<>();
+		    List<Document> platosDocs = (List<Document>) doc.get("platos");
+		    if (platosDocs != null) {
+		        for (Document platoDoc : platosDocs) {
+		            Plato plato = new Plato();
+		            plato.setNombre(platoDoc.getString("nombre"));
+		            plato.setDescripcion(platoDoc.getString("descripcion"));
+		            plato.setPrecio(platoDoc.getDouble("precio"));
+		            platos.add(plato);
+		        }
+		    }
+		    restaurante.setPlatos(platos);
+
+		    List<SitioTuristico> sitiosTuristicos = new ArrayList<>();
+		    List<Document> sitiosTuristicosDocs = (List<Document>) doc.get("sitiosTuristicosDestacados");
+		    if (sitiosTuristicosDocs != null) {
+		        for (Document sitioTuristicoDoc : sitiosTuristicosDocs) {
+		            SitioTuristico sitioTuristico = new SitioTuristico();
+		            sitioTuristico.setTitulo(sitioTuristicoDoc.getString("titulo"));
+		            sitioTuristico.setResumen(sitioTuristicoDoc.getString("resumen"));
+		            sitioTuristico.setCategorias((List<String>) sitioTuristicoDoc.get("categorias"));
+		            sitioTuristico.setEnlaces((List<String>) sitioTuristicoDoc.get("enlaces"));
+		            sitioTuristico.setImagenes((List<String>) sitioTuristicoDoc.get("imagenes"));
+		            sitiosTuristicos.add(sitioTuristico);
+		        }
+		    }
+		    restaurante.setSitiosTuristicos(sitiosTuristicos);
+
+		    return restaurante;
 	}
 
 	@Override
@@ -309,7 +366,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 	}
 	
 	@Override
-	public boolean createOpinion(String idRestaurante, String idOpinion) throws RepositorioException, EntidadNoEncontrada {
+	public boolean updateOpinion(String idRestaurante, String idOpinion, int numValoraciones, double calificacionMedia) throws RepositorioException, EntidadNoEncontrada {
 		ObjectId objectId;
 		try {
 			objectId = new ObjectId(idRestaurante);
@@ -318,7 +375,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		}
 		long createdCount = restauranteCollection
 				.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("idOpinion", idOpinion),
-						Updates.set("numeroValoraciones", 0), Updates.set("calificacionMedia", 0.0)))
+						Updates.set("numeroValoraciones", numValoraciones), Updates.set("calificacionMedia", calificacionMedia)))
 				.getModifiedCount();
 		if (createdCount == 0) {
 			throw new EntidadNoEncontrada(idRestaurante + " no existe en la base de datos");

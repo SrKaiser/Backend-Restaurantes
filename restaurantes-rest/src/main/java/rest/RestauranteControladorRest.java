@@ -89,13 +89,14 @@ public class RestauranteControladorRest {
             return Response.status(Response.Status.BAD_REQUEST).entity("Solicitud incorrecta").build();
         }
         else {
-        	// "X-Forwarded-Host" contiene la URL original de la pasarela
-            String pasarelaUrl = request.getHeader("X-Forwarded-Host");
-
-            // URL del nuevo restaurante utilizando la URL de la pasarela
-            String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
-
-            return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
+//        	// "X-Forwarded-Host" contiene la URL original de la pasarela
+//            String pasarelaUrl = request.getHeader("X-Forwarded-Host");
+//
+//            // URL del nuevo restaurante utilizando la URL de la pasarela
+//            String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
+//
+//            return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
+        	return Response.status(Response.Status.CREATED).entity(id).build();
         }
     }
     

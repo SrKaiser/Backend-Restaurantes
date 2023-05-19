@@ -87,3 +87,6 @@ C:\Users\César Pagán\Documents\GitHub\proyecto-arso\opiniones-rest\obj\Debug\n
 C:\Users\César Pagán\Documents\GitHub\proyecto-arso\opiniones-rest\obj\Debug\net6.0\opiniones-rest.genruntimeconfig.cache
 C:\Users\César Pagán\Documents\GitHub\proyecto-arso\opiniones-rest\obj\Debug\net6.0\ref\opiniones-rest.dll
 C:\Users\César Pagán\Documents\GitHub\proyecto-arso\opiniones-rest\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Kaiser\Documents\GitHub\arso-proyecto\opiniones-rest\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Kaiser\Documents\GitHub\arso-proyecto\opiniones-rest\bin\Debug\net6.0\RabbitMQ.Client.dll
+C:\Users\Kaiser\Documents\GitHub\arso-proyecto\opiniones-rest\bin\Debug\net6.0\System.Threading.Channels.dll

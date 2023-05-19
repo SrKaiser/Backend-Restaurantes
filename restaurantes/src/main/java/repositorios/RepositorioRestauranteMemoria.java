@@ -139,10 +139,16 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	}
 
 	@Override
-	public boolean createOpinion(String idRestaurante, String idOpinion)
+	public boolean updateOpinion(String idRestaurante, String idOpinion, int numValoraciones, double calificacionMedia)
 			throws RepositorioException, EntidadNoEncontrada {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Restaurante findByIdOpinion(String idOpinion) throws RepositorioException, EntidadNoEncontrada {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -145,7 +145,7 @@ public class ServicioRetrofit {
         }
     }
 
-    public void listarRestaurantes() {
+    public List<ResumenRestaurante> listarRestaurantes() {
         Call<List<ResumenRestaurante>> listarRestaurantesCall = api.listarRestaurantes();
 
         try {
@@ -155,8 +155,10 @@ public class ServicioRetrofit {
             for (ResumenRestaurante restaurante : restaurantes) {
                 System.out.println(restaurante);
             }
+            return restaurantes;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 }

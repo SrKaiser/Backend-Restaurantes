@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
     <PackageReference Include="NodaTime" Version="3.1.9" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

@@ -3,7 +3,12 @@ using System;
 using System.Collections.Generic;
 using Opinion.Modelo;
 using Repositorio;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using System.Text;
 using Opinion.Repositorio;
+using Opinion.Evento;
 
 
 namespace Opinion.Servicio
@@ -49,14 +54,18 @@ namespace Opinion.Servicio
                         
                 // 1. Crear el evento
             
-                // JObject evento = new JObject();
-                // evento["idOpinion"] = opinion.Id;
-                // evento["valoracion"] = valoracion;
-                // evento["numeroValoraciones"] = opinion.NumeroValoraciones;
-                // evento["calificacionMedia"] = opinion.CalificacionMedia;
+                EventoNuevaValoracion evento = new EventoNuevaValoracion
+                {
+                    IdOpinion = opinion.Id,
+                    NuevaValoracion = valoracion,
+                    NumValoraciones = opinion.GetNumeroValoraciones(),
+                    CalificacionMedia = opinion.GetCalificacionMedia(),
+                };
                 
                 // 2. Notificarlo
-                // NotificarEvento(evento);
+                string json = JsonConvert.SerializeObject(evento);
+                JObject jObject = JObject.Parse(json);
+                NotificarEvento(jObject);
 
                 return true;
             }
@@ -65,38 +74,38 @@ namespace Opinion.Servicio
         }
 
         
-        // protected void NotificarEvento(JObject evento)
-        // {
-        //     try
-        //     {
-        //         var factory = new ConnectionFactory()
-        //         {
-        //             Uri = new Uri("amqps://edzrfeij:KHQQWPWgL4xfzLdyGf8kazZ8XWrxNm6H@crow.rmq.cloudamqp.com/edzrfeij")
-        //         };
+        protected void NotificarEvento(JObject evento)
+        {
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    Uri = new Uri("amqps://edzrfeij:KHQQWPWgL4xfzLdyGf8kazZ8XWrxNm6H@crow.rmq.cloudamqp.com/edzrfeij")
+                };
 
-        //         using (var connection = factory.CreateConnection())
-        //         using (var channel = connection.CreateModel())
-        //         {
-        //             /** Declaración del Exchange **/
-        //             // FIXME: la declaración del exchange debería hacerse una sola vez en el constructor
-        //             var exchangeName = "evento.nueva.valoracion";
-        //             bool durable = true;
-        //             channel.ExchangeDeclare(exchangeName, "fanout", durable);
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    /** Declaración del Exchange **/
+                    // No es necesaria porque ya se ha creado en el RabbitManager
+                    var exchangeName = "evento.nueva.valoracion";
+                    bool durable = true;
+                    channel.ExchangeDeclare(exchangeName, "fanout", durable);
 
-        //             /** Envío del mensaje **/
-        //             var json = JsonConvert.SerializeObject(evento);
+                    /** Envío del mensaje **/
+                    var json = JsonConvert.SerializeObject(evento);
 
-        //             var basicProperties = channel.CreateBasicProperties();
-        //             basicProperties.ContentType = "application/json";
+                    var basicProperties = channel.CreateBasicProperties();
+                    basicProperties.ContentType = "application/json";
 
-        //             channel.BasicPublish(exchangeName, routingKey: "", basicProperties, body: Encoding.UTF8.GetBytes(json));
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         throw new Exception(e.Message);
-        //     }
-        // }
+                    channel.BasicPublish(exchangeName, routingKey: "", basicProperties, body: Encoding.UTF8.GetBytes(json));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
         public OpinionModelo ObtenerOpinion(string idOpinion)
         {

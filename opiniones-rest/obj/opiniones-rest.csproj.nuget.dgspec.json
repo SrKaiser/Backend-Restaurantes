@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\César Pagán\\Documents\\GitHub\\proyecto-arso\\opiniones-rest\\opiniones-rest.csproj": {}
+    "C:\\Users\\Kaiser\\Documents\\GitHub\\arso-proyecto\\opiniones-rest\\opiniones-rest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\César Pagán\\Documents\\GitHub\\proyecto-arso\\opiniones-rest\\opiniones-rest.csproj": {
+    "C:\\Users\\Kaiser\\Documents\\GitHub\\arso-proyecto\\opiniones-rest\\opiniones-rest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\César Pagán\\Documents\\GitHub\\proyecto-arso\\opiniones-rest\\opiniones-rest.csproj",
+        "projectUniqueName": "C:\\Users\\Kaiser\\Documents\\GitHub\\arso-proyecto\\opiniones-rest\\opiniones-rest.csproj",
         "projectName": "opiniones-rest",
-        "projectPath": "C:\\Users\\César Pagán\\Documents\\GitHub\\proyecto-arso\\opiniones-rest\\opiniones-rest.csproj",
-        "packagesPath": "C:\\Users\\César Pagán\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\César Pagán\\Documents\\GitHub\\proyecto-arso\\opiniones-rest\\obj\\",
+        "projectPath": "C:\\Users\\Kaiser\\Documents\\GitHub\\arso-proyecto\\opiniones-rest\\opiniones-rest.csproj",
+        "packagesPath": "C:\\Users\\Kaiser\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Kaiser\\Documents\\GitHub\\arso-proyecto\\opiniones-rest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\César Pagán\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Kaiser\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -49,6 +49,10 @@
             "NodaTime": {
               "target": "Package",
               "version": "[3.1.9, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.5.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

@@ -1,9 +1,10 @@
 package servicios;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +16,12 @@ import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import modelos.Valoracion;
+import opiniones.eventos.EventoNuevaValoracion;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
 
-import com.google.gson.reflect.TypeToken;
-
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -81,21 +82,24 @@ public class ServicioRestaurante implements IServicioRestaurante {
     			        
     			        long deliveryTag = envelope.getDeliveryTag();
 
-//    			        String contenido = new String(body);
-//    			        
-//    					ObjectMapper mapper = new ObjectMapper(); // Jackson
+    			        String contenido = new String(body);
+   			        
+    					ObjectMapper mapper = new ObjectMapper(); // Jackson
+    					mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+    					mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    					EventoNuevaValoracion evento = mapper.readValue(contenido, EventoNuevaValoracion.class);
     					
-//    					JsonObject evento = mapper.readValue(contenido, EventoReservaCreada.class);
-//    				    
-//    				    // Procesamos el evento
-//    				    Cita cita = new Cita();
-//    				    cita.setTitulo(evento.getTitulo());
-//    				    cita.setDescripcion(evento.getDescripcion());
-//    				    
-//    				    for (String usuario : evento.getUsuarios()) {
-//    				    	citas.putIfAbsent(usuario, new LinkedList<>());
-//    				    	citas.get(usuario).add(cita);			    	
-//    				    }
+  				    
+    				    // Procesamos el evento
+    					String idOpinion = evento.getIdOpinion();
+    					try {
+							Restaurante r = repositorioRestaurante.findByIdOpinion(idOpinion);
+							repositorioRestaurante.updateOpinion(r.getId(), idOpinion, evento.getNumValoraciones(), evento.getCalificacionMedia());
+							System.out.println(evento.getNumValoraciones());
+						} catch (RepositorioException | EntidadNoEncontrada e) {
+							System.out.println("aa");
+							e.printStackTrace();
+						}
     			        
     			        // Confirma el procesamiento
     			        channel.basicAck(deliveryTag, false);
@@ -119,9 +123,9 @@ public class ServicioRestaurante implements IServicioRestaurante {
 			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180");
 		}
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String idGestor = authentication.getName();	
-		return repositorioRestaurante.create(nombre, latitud, longitud, idGestor);
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		String idGestor = authentication.getName();	
+		return repositorioRestaurante.create(nombre, latitud, longitud, null);
 	
         
     }
@@ -206,6 +210,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
         return repositorioRestaurante.findById(idRestaurante);
     }
     
+    
     @Override
     public boolean borrarRestaurante(String idRestaurante) throws RepositorioException, EntidadNoEncontrada {
         return repositorioRestaurante.delete(idRestaurante);
@@ -231,7 +236,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
         restaurante.setNumeroValoraciones(0);
         restaurante.setCalificacionMedia(0);
         
-        repositorioRestaurante.createOpinion(idRestaurante, idOpinion);
+        repositorioRestaurante.updateOpinion(idRestaurante, idOpinion, 0, 0);
 
         return idOpinion;
     }
@@ -246,11 +251,8 @@ public class ServicioRestaurante implements IServicioRestaurante {
         
         String idOpinion = restaurante.getOpinionId();
         String jsonValoraciones = servicioOpiniones.obtenerValoraciones(idOpinion);
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<Valoracion>>(){}.getType();
-        List<Valoracion> valoraciones = gson.fromJson(jsonValoraciones, type);
         
-    	return valoraciones;
+    	return null;
     }
     
 }

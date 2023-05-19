@@ -31,6 +31,8 @@ public interface IRepositorioRestaurante{
     
     boolean updatePlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada;
 
-	boolean createOpinion(String idRestaurante, String idOpinion) throws RepositorioException, EntidadNoEncontrada;
+	boolean updateOpinion(String idRestaurante, String idOpinion, int numValoraciones, double calificacionMedia) throws RepositorioException, EntidadNoEncontrada;
+
+	Restaurante findByIdOpinion(String idOpinion) throws RepositorioException, EntidadNoEncontrada;
 
 }

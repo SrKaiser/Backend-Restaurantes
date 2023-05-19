@@ -26,8 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // Permitir el acceso a la raíz y a las rutas públicas
             .antMatchers("/", "/login**").permitAll()
             // Configurar el acceso a los servicios Restaurantes y Opiniones
-            .antMatchers(HttpMethod.GET, "/restaurantes/**", "/opiniones/**").hasAnyRole("GESTOR", "CLIENTE")
-            .antMatchers("/restaurantes/**").hasRole("GESTOR")
+            .antMatchers("/restaurantes/**").authenticated()
             .and()
             .oauth2Login().successHandler(successHandler)
             .and()

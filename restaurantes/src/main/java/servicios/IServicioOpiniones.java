@@ -1,11 +1,10 @@
 package servicios;
 
-import java.util.List;
-
-import modelos.Valoracion;
+import excepciones.EntidadNoEncontrada;
+import excepciones.RepositorioException;
 
 public interface IServicioOpiniones {
-    String registrarRecurso(String nombreRecurso);
-    List<Valoracion> obtenerValoraciones(String idOpinion);
+    Object registrarRecurso(String nombre) throws RepositorioException, EntidadNoEncontrada;
+    Object obtenerValoraciones(String idOpinion);
 }
 

@@ -1,8 +1,10 @@
-package excepciones;
+package rest;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import excepciones.EntidadNoEncontrada;
 
 @Provider
 public class TratamientoEntidadNoEncontrada implements ExceptionMapper<EntidadNoEncontrada> {

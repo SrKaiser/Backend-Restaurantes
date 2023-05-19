@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import excepciones.EntidadNoEncontrada;
+import excepciones.RepositorioException;
 import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
@@ -135,6 +136,13 @@ public class RepositorioRestauranteMemoria implements IRepositorioRestaurante{
 	        restaurantesList.add(resumen);
 	    }
 	    return restaurantesList;
+	}
+
+	@Override
+	public boolean createOpinion(String idRestaurante, String idOpinion)
+			throws RepositorioException, EntidadNoEncontrada {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

@@ -40,11 +40,9 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 	}
 
 	@Override
-	public String create(String nombre, double latitud, double longitud, String gestorId) throws RepositorioException {
+	public String create(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException {
 		Document doc = new Document("nombre", nombre).append("latitud", latitud).append("longitud", longitud)
-				.append("gestorId", gestorId)
-//                .append("opinionId", opinionId)
-				.append("numeroValoraciones", 0).append("calificacionMedia", 0.0);
+				.append("idGestor", idGestor);
 		restauranteCollection.insertOne(doc);
 		ObjectId id = doc.getObjectId("_id");
 		return id.toHexString();
@@ -54,15 +52,6 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 	@Override
 	public boolean update(String idRestaurante, String nombre, double latitud, double longitud)
 			throws RepositorioException, EntidadNoEncontrada {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new RepositorioException("El nombre no puede ser null o vacío");
-		}
-		if (latitud < -90 || latitud > 90) {
-			throw new RepositorioException("La latitud debe estar entre -90 y 90");
-		}
-		if (longitud < -180 || longitud > 180) {
-			throw new RepositorioException("La longitud debe estar entre -180 y 180");
-		}
 		ObjectId objectId;
 		try {
 			objectId = new ObjectId(idRestaurante);
@@ -163,8 +152,6 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 			throw new RepositorioException("El ID proporcionado no es válido", e);
 		}
 		
-		
-
 		long deletedCount = restauranteCollection
 				.updateOne(Filters.eq("_id", objectId), Updates.pull("platos", new Document("nombre", nombrePlato)))
 				.getModifiedCount();
@@ -239,6 +226,10 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		restaurante.setNombre(doc.getString("nombre"));
 		restaurante.setLatitud(doc.getDouble("latitud"));
 		restaurante.setLongitud(doc.getDouble("longitud"));
+		restaurante.setNumeroValoraciones(doc.getInteger("numeroValoraciones"));
+		restaurante.setGestorId(doc.getString("idGestor"));
+		restaurante.setOpinionId(doc.getString("idOpinion"));
+		restaurante.setCalificacionMedia(doc.getDouble("calificacionMedia"));
 
 		List<Plato> platos = new ArrayList<>();
 		List<Document> platosDocs = (List<Document>) doc.get("platos");
@@ -315,6 +306,24 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 			}
 		}
 		return restaurantesList;
+	}
+	
+	@Override
+	public boolean createOpinion(String idRestaurante, String idOpinion) throws RepositorioException, EntidadNoEncontrada {
+		ObjectId objectId;
+		try {
+			objectId = new ObjectId(idRestaurante);
+		} catch (IllegalArgumentException e) {
+			throw new RepositorioException("El ID proporcionado no es válido", e);
+		}
+		long createdCount = restauranteCollection
+				.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("idOpinion", idOpinion),
+						Updates.set("numeroValoraciones", 0), Updates.set("calificacionMedia", 0.0)))
+				.getModifiedCount();
+		if (createdCount == 0) {
+			throw new EntidadNoEncontrada(idRestaurante + " no existe en la base de datos");
+		}
+		return createdCount > 0;
 	}
 
 }

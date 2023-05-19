@@ -49,8 +49,8 @@ public interface RestauranteAPI {
     @GET("restaurantes")
     Call<List<ResumenRestaurante>> listarRestaurantes();
     
-    @POST("/api/opiniones/registrarRecurso/{nombreRecurso}")
-    Call<String> registrarRecurso(@Path("nombreRecurso") String nombreRecurso);
+    @POST("restaurantes/{id}/activar-opiniones")
+    Call<String> activarOpiniones(@Path("nombreRecurso") String nombreRecurso);
 
     @GET("/api/opiniones/{opinionId}/valoraciones")
     Call<List<Valoracion>> obtenerValoraciones(@Path("opinionId") String opinionId);

@@ -13,10 +13,9 @@ public class ServicioOpinionesMock implements IServicioOpiniones {
 	}
 
 	@Override
-	public List<Valoracion> obtenerValoraciones(String idOpinion) {
+	public String obtenerValoraciones(String idOpinion) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
    
 }

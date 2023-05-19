@@ -3,10 +3,11 @@ using Opinion.Servicio;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 namespace OpinionApi.Controllers
 {
-    [Route("api/opiniones")]
     [ApiController]
+    [Route("api/opiniones")]
     public class OpinionesController : ControllerBase
     {
         private IServicioOpinion _servicio;
@@ -17,14 +18,14 @@ namespace OpinionApi.Controllers
         }
 
         [HttpGet("obtenerOpiniones")]
-        // curl -X GET https://localhost:7054/api/opiniones/obtenerOpiniones
+        // curl -i -X GET https://localhost:7054/api/opiniones/obtenerOpiniones
         public ActionResult<List<OpinionModelo>> Get()
         {
             return _servicio.ObtenerOpiniones();
         }
 
         [HttpGet("{idOpinion}", Name = "GetOpinion")]
-        // curl -X GET https://localhost:7054/api/opiniones/{idOpinion}
+        // curl -i -X GET https://localhost:7054/api/opiniones/{idOpinion}
         public ActionResult<OpinionModelo> Get(string idOpinion)
         {
             var entidad = _servicio.ObtenerOpinion(idOpinion);
@@ -38,8 +39,8 @@ namespace OpinionApi.Controllers
         }
 
         [HttpGet("{idOpinion}/valoraciones")]
-        // curl -X GET https://localhost:7054/api/opiniones/{idOpinion}/valoraciones
-        public ActionResult<List<Valoracion>> GetValoraciones(string idOpinion)
+        // curl -i -X GET https://localhost:7054/api/opiniones/{idOpinion}/valoraciones
+        public ActionResult<string> GetValoraciones(string idOpinion)
         {
             var entidad = _servicio.ObtenerOpinion(idOpinion);
 
@@ -47,23 +48,25 @@ namespace OpinionApi.Controllers
             {
                 return NotFound();
             }
-            
-            return entidad.Valoraciones;
+        
+            var jsonValoraciones = JsonConvert.SerializeObject(entidad.Valoraciones);
+            return jsonValoraciones;
         }
 
 
         [HttpPost("registrarRecurso/{nombreRecurso}")]
-        // curl -X POST https://localhost:7054/api/opiniones/registrarRecurso/{nombreRecurso}
-        public ActionResult<string> Create([FromRoute] string nombreRecurso)
+        // curl -i -X POST https://localhost:7054/api/opiniones/registrarRecurso/{nombreRecurso}
+        public ActionResult<Object> Create([FromRoute] string nombreRecurso)
         {
-            return _servicio.RegistrarRecurso(nombreRecurso);
+            string id =  _servicio.RegistrarRecurso(nombreRecurso);
+            return new {id};
 
             //return CreatedAtRoute("GetOpinion", new { nombreRecurso = nombreRecurso });
         }
 
-        [HttpPost("{idOpinion}/añadirValoracion")]
-        // curl -X POST -H "Content-Type: application/json" -d '{"correoElectronico": "usuario@example.com", "calificacion": 5, "comentario": "Excelente recurso"}' https://localhost:7054/api/opiniones/{idOpinion}/añadirValoracion
-        // curl -X POST -H "Content-Type: application/json" -d "{\"correoElectronico\": \"usuario@example.com\", \"calificacion\": 5, \"comentario\": \"Excelente recurso\"}" https://localhost:7054/api/opiniones/645546a2775e32c890ffb166/añadirValoracion
+        [HttpPost("{idOpinion}/addValoracion")]
+        // curl -i -X POST -H "Content-Type: application/json" -d '{"correoElectronico": "usuario@example.com", "calificacion": 5, "comentario": "Excelente recurso"}' https://localhost:7054/api/opiniones/64669b4edb5db81ba23b9fab/addValoracion
+        // curl -i -X POST -H "Content-Type: application/json" -d "{\"correoElectronico\": \"usuario@example.com\", \"calificacion\": 5, \"comentario\": \"Excelente recurso\"}" https://localhost:7054/api/opiniones/64669b4edb5db81ba23b9fab/addValoracion
         public ActionResult<bool> addValoracion(string idOpinion, [FromBody] Valoracion valoracion)
         {
             var entidad = _servicio.ObtenerOpinion(idOpinion);

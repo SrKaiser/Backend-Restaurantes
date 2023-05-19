@@ -3,9 +3,15 @@ package modelos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Opinion {
+	
+	@JsonProperty("_id")
     private String id;
+	@JsonProperty("nombreRecurso")
     private String nombreRecurso;
+	@JsonProperty("valoraciones")
     private List<Valoracion> valoraciones;
 
     public Opinion(String nombreRecurso) {

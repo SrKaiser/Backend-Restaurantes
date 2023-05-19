@@ -1,21 +1,18 @@
 package servicios;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import java.io.IOException;
-import java.util.List;
-
-import modelos.Valoracion;
 
 public class ServicioOpinionesRetrofit implements IServicioOpiniones {
     private OpinionesAPI api;
 
     public ServicioOpinionesRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:7054")
+                .baseUrl("http://localhost:5193/api/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
 
@@ -23,11 +20,11 @@ public class ServicioOpinionesRetrofit implements IServicioOpiniones {
     }
 
     @Override
-    public String registrarRecurso(String nombreRecurso) {
-        Call<String> registrarRecursoCall = api.registrarRecurso(nombreRecurso);
+    public Object registrarRecurso(String nombreRecurso) {    	
+        Call<Object> registrarRecursoCall = api.registrarRecurso(nombreRecurso);
    
         try {
-            Response<String> response = registrarRecursoCall.execute();
+            Response<Object> response = registrarRecursoCall.execute();
             System.out.println(response.code());
             System.out.println(response.body());
             return response.body();
@@ -39,21 +36,15 @@ public class ServicioOpinionesRetrofit implements IServicioOpiniones {
     }
 
     @Override
-    public List<Valoracion> obtenerValoraciones(String idOpinion) {
+    public String obtenerValoraciones(String idOpinion) {
     	
-    	Call<List<Valoracion>> obtenerValoracionesCall = api.obtenerValoraciones(idOpinion);
+    	Call<String> obtenerValoracionesCall = api.obtenerValoraciones(idOpinion);
     	   
         try {
-            Response<List<Valoracion>> response = obtenerValoracionesCall.execute();
+            Response<String> response = obtenerValoracionesCall.execute();
             System.out.println(response.code());
             System.out.println(response.body());
-            List<Valoracion> valoraciones = response.body();
-            if (valoraciones != null) {
-                for (Valoracion v : valoraciones) {
-                    System.out.println(v);
-                }
-            }
-            return valoraciones;
+            return response.body();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -1,10 +1,9 @@
 package servicios;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
-import javax.json.JsonObject;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,10 +14,13 @@ import modelos.Plato;
 import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
+import modelos.Valoracion;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.reflect.TypeToken;
+
+import com.google.gson.Gson;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -29,17 +31,19 @@ import com.rabbitmq.client.Envelope;
 public class ServicioRestaurante implements IServicioRestaurante {
 	
 	private IRepositorioRestaurante repositorioRestaurante;
+	private ServicioOpinionesRetrofit servicioOpiniones;
+
 
     public ServicioRestaurante() {
     	this.repositorioRestaurante  = FactoriaRepositorios.getRepositorio(Restaurante.class);
+    	this.servicioOpiniones = new ServicioOpinionesRetrofit();
     	
     	// registro del consumidor de eventos
 		
     			try {
     			ConnectionFactory factory = new ConnectionFactory();
     			
-    			// TODO uri
-    			factory.setUri("uri");
+    			factory.setUri("amqps://edzrfeij:KHQQWPWgL4xfzLdyGf8kazZ8XWrxNm6H@crow.rmq.cloudamqp.com/edzrfeij");
     			
     		    Connection connection = factory.newConnection();
 
@@ -63,7 +67,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     			
     			boolean autoAck = false;
     			
-    			String etiquetaConsumidor = "servicio-agendas";
+    			String etiquetaConsumidor = "servicio-restaurante";
     			
     			// Consumidor push
     			
@@ -77,9 +81,9 @@ public class ServicioRestaurante implements IServicioRestaurante {
     			        
     			        long deliveryTag = envelope.getDeliveryTag();
 
-    			        String contenido = new String(body);
-    			        
-    					ObjectMapper mapper = new ObjectMapper(); // Jackson
+//    			        String contenido = new String(body);
+//    			        
+//    					ObjectMapper mapper = new ObjectMapper(); // Jackson
     					
 //    					JsonObject evento = mapper.readValue(contenido, EventoReservaCreada.class);
 //    				    
@@ -106,18 +110,18 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public String altaRestaurante(String nombre, double latitud, double longitud) throws RepositorioException {
     	if (nombre == null || nombre.trim().isEmpty()) {
-			throw new RepositorioException("El nombre no puede ser null o vacío");
+			throw new IllegalArgumentException("El nombre no puede ser null o vacío");
 		}
 		if (latitud < -90 || latitud > 90) {
-			throw new RepositorioException("La latitud debe estar entre -90 y 90");
+			throw new IllegalArgumentException("La latitud debe estar entre -90 y 90");
 		}
 		if (longitud < -180 || longitud > 180) {
-			throw new RepositorioException("La longitud debe estar entre -180 y 180");
+			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180");
 		}
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String gestorId = authentication.getName();	
-		return repositorioRestaurante.create(nombre, latitud, longitud, gestorId);
+		String idGestor = authentication.getName();	
+		return repositorioRestaurante.create(nombre, latitud, longitud, idGestor);
 	
         
     }
@@ -125,13 +129,13 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public boolean actualizarRestaurante(String idRestaurante, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada {
     	if (nombre == null || nombre.trim().isEmpty()) {
-			throw new RepositorioException("El nombre no puede ser null o vacío");
+			throw new IllegalArgumentException("El nombre no puede ser null o vacío");
 		}
 		if (latitud < -90 || latitud > 90) {
-			throw new RepositorioException("La latitud debe estar entre -90 y 90");
+			throw new IllegalArgumentException("La latitud debe estar entre -90 y 90");
 		}
 		if (longitud < -180 || longitud > 180) {
-			throw new RepositorioException("La longitud debe estar entre -180 y 180");
+			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180");
 		}
     	return repositorioRestaurante.update(idRestaurante, nombre, latitud, longitud);
     }
@@ -144,14 +148,14 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public boolean establecerSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicos) throws RepositorioException, EntidadNoEncontrada {
     	if (sitiosTuristicos == null || sitiosTuristicos.isEmpty()) {
-	        throw new RepositorioException("La lista de sitios turísticos no puede ser nula o vacía");
+	        throw new IllegalArgumentException("La lista de sitios turísticos no puede ser nula o vacía");
 	    }
 	    for (SitioTuristico sitio : sitiosTuristicos) {
 	        if (sitio.getTitulo() == null || sitio.getTitulo().trim().isEmpty()) {
-	            throw new RepositorioException("El título del sitio turístico no puede ser null o vacío");
+	            throw new IllegalArgumentException("El título del sitio turístico no puede ser null o vacío");
 	        }
 	        if (sitio.getResumen() == null || sitio.getResumen().trim().isEmpty()) {
-	            throw new RepositorioException("El resumen del sitio turístico no puede ser null o vacío");
+	            throw new IllegalArgumentException("El resumen del sitio turístico no puede ser null o vacío");
 	        }
 	    }
 	    
@@ -176,7 +180,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public boolean borrarPlato(String idRestaurante, String nombrePlato) throws RepositorioException, EntidadNoEncontrada {
     	if (nombrePlato == null || nombrePlato.trim().isEmpty()) {
-			throw new RepositorioException("El nombre del plato no puede ser null o vacío");
+			throw new IllegalArgumentException("El nombre del plato no puede ser null o vacío");
 		}
     
         return repositorioRestaurante.removePlato(idRestaurante, nombrePlato);
@@ -185,13 +189,13 @@ public class ServicioRestaurante implements IServicioRestaurante {
     @Override
     public boolean actualizarPlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada {
     	if (plato.getNombre() == null || plato.getNombre().trim().isEmpty()) {
-	        throw new RepositorioException("El nombre del plato no puede ser null o vacío");
+	        throw new IllegalArgumentException("El nombre del plato no puede ser null o vacío");
 	    }
 	    if (plato.getDescripcion() == null || plato.getDescripcion().trim().isEmpty()) {
-	        throw new RepositorioException("La descripción del plato no puede ser null o vacía");
+	        throw new IllegalArgumentException("La descripción del plato no puede ser null o vacía");
 	    }
 	    if (plato.getPrecio() <= 0) {
-	        throw new RepositorioException("El precio del plato debe ser mayor que 0");
+	        throw new IllegalArgumentException("El precio del plato debe ser mayor que 0");
 	    }
 
         return repositorioRestaurante.updatePlato(idRestaurante, plato);   
@@ -211,4 +215,42 @@ public class ServicioRestaurante implements IServicioRestaurante {
     public List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException {
         return repositorioRestaurante.findAll();
     }
+    
+    @Override
+    public String activarOpiniones(String idRestaurante) throws RepositorioException, EntidadNoEncontrada {
+        Restaurante restaurante = repositorioRestaurante.findById(idRestaurante);
+
+        if (restaurante == null) {
+            throw new EntidadNoEncontrada("El restaurante no existe");
+        }
+        
+        String idOpinion = servicioOpiniones.registrarRecurso(restaurante.getNombre()).toString();
+        idOpinion = idOpinion.replace("{id=", "").replace("}", "");
+
+        restaurante.setOpinionId(idOpinion);
+        restaurante.setNumeroValoraciones(0);
+        restaurante.setCalificacionMedia(0);
+        
+        repositorioRestaurante.createOpinion(idRestaurante, idOpinion);
+
+        return idOpinion;
+    }
+    
+    @Override
+    public List<Valoracion> recuperarTodasValoraciones(String idRestaurante) throws RepositorioException, EntidadNoEncontrada{
+    	Restaurante restaurante = repositorioRestaurante.findById(idRestaurante);
+
+        if (restaurante == null) {
+            throw new EntidadNoEncontrada("El restaurante no existe");
+        }
+        
+        String idOpinion = restaurante.getOpinionId();
+        String jsonValoraciones = servicioOpiniones.obtenerValoraciones(idOpinion);
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<Valoracion>>(){}.getType();
+        List<Valoracion> valoraciones = gson.fromJson(jsonValoraciones, type);
+        
+    	return valoraciones;
+    }
+    
 }

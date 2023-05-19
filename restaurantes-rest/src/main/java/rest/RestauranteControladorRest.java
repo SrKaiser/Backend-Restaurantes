@@ -1,4 +1,4 @@
-	package rest;
+package rest;
 
 import java.util.List;
 
@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,10 +30,12 @@ import modelos.Restaurante;
 import modelos.ResumenRestaurante;
 import modelos.SitioTuristico;
 import modelos.SolicitudRestaurante;
+import modelos.Valoracion;
 import rest.seguridad.AvailableRoles;
 import rest.seguridad.Secured;
 import servicios.FactoriaServicios;
 import servicios.IServicioRestaurante;
+
 
 
 @Api
@@ -58,6 +62,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    // curl -i -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0M2U5YTE0ZS01YTVlLTQ1MDUtODZkNi01YTY4MmE1ZWZkYjYiLCJpc3MiOiJQYXNhcmVsYSBadXVsIiwiZXhwIjoxNjg0NTA1MjM2LCJzdWIiOiJTckthaXNlciIsInVzdWFyaW8iOiJjZXNhci5wYWdhbnZpbGxhZmFuZUBnbWFpbC5jb20iLCJyb2wiOiJHRVNUT1IifQ.pZFcc48-4oe6eVmYYq4nKuTMJ7ZpfX679EwV96a5Y54" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE
     public Response obtenerRestaurante(@ApiParam(value = "ID del restaurante a recuperar", required = true) @PathParam("id") String id) throws Exception {
         return Response.status(Response.Status.OK).entity(servicioRestaurante.recuperarRestaurante(id)).build();
     }
@@ -71,7 +76,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -i -X POST -H "Content-Type: application/json" -d '{"nombre": "Goiko", "latitud": 40.42039145624014, "longitud": -3.6996503622016954}' http://localhost:8080/api/restaurantes
+    // curl -i -X POST -H "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8080/api/restaurantes
+    // curl -i -X POST -H "Authorization: Bearer <token>" "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8090/api/restaurantes
     public Response crearRestaurante(SolicitudRestaurante nuevoRestaurante) throws Exception {
     	String nombre = nuevoRestaurante.getNombre();
         double latitud = nuevoRestaurante.getLatitud();
@@ -90,7 +96,6 @@ public class RestauranteControladorRest {
             String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
 
             return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
-//            return Response.status(Response.Status.CREATED).entity(id).build();
         }
     }
     
@@ -259,4 +264,50 @@ public class RestauranteControladorRest {
         
         return Response.ok(restaurantesList).build();
     }
+    
+    @PUT
+    @Secured(AvailableRoles.GESTOR)
+    @Path("/{id}/activar-opiniones")
+    @ApiOperation(value = "Activa las opiniones para un restaurante por ID", response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Opiniones para el restaurante activadas correctamente"),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
+        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
+    })
+    // curl -i -X PUT -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/activar-opiniones
+    public Response activarOpiniones(
+        @ApiParam(value = "ID del restaurante para activar opiniones", required = true) @PathParam("id") String id) throws Exception {
+
+        String idOpinion = servicioRestaurante.activarOpiniones(id);
+
+        if (idOpinion != null) {
+            return Response.status(Response.Status.OK).entity(idOpinion).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
+        }
+    }
+    
+
+	@GET
+    @Secured(AvailableRoles.GESTOR)
+    @Path("/{id}/valoraciones")
+    @ApiOperation(value = "Recupera todas las valoraciones para un restaurante por ID", response = Valoracion.class, responseContainer = "List")
+    @ApiResponses(value = {
+        @ApiResponse(code = HttpServletResponse.SC_OK, message = "Valoraciones recuperadas correctamente"),
+        @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
+        @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
+    })
+    // curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/646647a7b74fb24a2063466d/valoraciones
+    public Response recuperarTodasValoraciones(
+        @ApiParam(value = "ID del restaurante para recuperar valoraciones", required = true) @PathParam("id") String id) throws Exception {
+      
+           List<Valoracion> valoraciones = servicioRestaurante.recuperarTodasValoraciones(id);
+            
+            if (valoraciones != null) {
+                return Response.status(Response.Status.OK).entity(valoraciones).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("Restaurante no encontrado").build();
+            }
+    }
+
 }

@@ -1,6 +1,6 @@
 package repositorio;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +126,7 @@ public class RepositorioOpinion implements IRepositorioOpinion {
 		opinion.setNombreRecurso(doc.getString("nombreRecurso"));
 		List<Valoracion> valoraciones = new ArrayList<>();
 	    for (Document valoracionDoc : (List<Document>) doc.get("valoraciones")) {
-	        LocalDate fecha = LocalDate.parse(valoracionDoc.getString("fecha"));
+	    	LocalDateTime fecha = LocalDateTime.parse(valoracionDoc.getString("fecha"));
 	        Valoracion valoracion = new Valoracion(
 	                valoracionDoc.getString("email"),
 	                valoracionDoc.getInteger("calificacion"),

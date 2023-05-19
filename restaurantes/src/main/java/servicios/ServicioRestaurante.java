@@ -1,13 +1,26 @@
 package servicios;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.StringReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 
 import excepciones.EntidadNoEncontrada;
 import excepciones.RepositorioException;
@@ -19,15 +32,6 @@ import modelos.Valoracion;
 import opiniones.eventos.EventoNuevaValoracion;
 import repositorios.FactoriaRepositorios;
 import repositorios.IRepositorioRestaurante;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
 
 public class ServicioRestaurante implements IServicioRestaurante {
 	
@@ -73,7 +77,8 @@ public class ServicioRestaurante implements IServicioRestaurante {
     			// Consumidor push
     			
     			channel.basicConsume(queueName, autoAck, etiquetaConsumidor, 
-    			  
+
+
     			  new DefaultConsumer(channel) {
     			    @Override
     			    public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
@@ -83,21 +88,53 @@ public class ServicioRestaurante implements IServicioRestaurante {
     			        long deliveryTag = envelope.getDeliveryTag();
 
     			        String contenido = new String(body);
+    			        System.out.println(contenido);
+    			        
+    			        // Crea un JsonReader a partir del contenido recibido
+    			        JsonReader reader = Json.createReader(new StringReader(contenido));
+
+    			        // Lee el objeto JSON principal
+    			        JsonObject obj = reader.readObject();
+
+    			        // Obtiene los campos necesarios para EventoNuevaValoracion
+    			        String idOpinion = obj.getString("IdOpinion");
+    			        int numValoraciones = obj.getInt("NumValoraciones");
+    			        double calificacionMedia = obj.getJsonNumber("CalificacionMedia").doubleValue();
+
+    			        // Obtiene y maneja la fecha manualmente
+    			        JsonObject valoracionObj = obj.getJsonObject("NuevaValoracion");
+    			        String correoElectronico = valoracionObj.getString("CorreoElectronico");
+    			        String fechaStr = valoracionObj.getString("Fecha");
+    			        LocalDateTime fecha;
+    			        try {
+    			            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    			            fecha = LocalDateTime.parse(fechaStr, formatter);
+    			        } catch (DateTimeParseException e) {
+    			            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    			            fecha = LocalDateTime.parse(fechaStr, formatter);
+    			        }
+
+    			        int calificacion = valoracionObj.getInt("Calificacion");
+    			        String comentario = valoracionObj.getString("Comentario");
+
+    			        Valoracion valoracion = new Valoracion(correoElectronico, fecha, calificacion, comentario);
+
+    			        EventoNuevaValoracion evento = new EventoNuevaValoracion(idOpinion, valoracion, numValoraciones, calificacionMedia);
    			        
-    					ObjectMapper mapper = new ObjectMapper(); // Jackson
-    					mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
-    					mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    					EventoNuevaValoracion evento = mapper.readValue(contenido, EventoNuevaValoracion.class);
+//    					ObjectMapper mapper = new ObjectMapper(); // Jackson
+//    					mapper.registerModule(new JavaTimeModule());
+//    					mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+//    					EventoNuevaValoracion evento = mapper.readValue(contenido, EventoNuevaValoracion.class);
     					
   				    
     				    // Procesamos el evento
-    					String idOpinion = evento.getIdOpinion();
+    					idOpinion = evento.getIdOpinion();
     					try {
 							Restaurante r = repositorioRestaurante.findByIdOpinion(idOpinion);
 							repositorioRestaurante.updateOpinion(r.getId(), idOpinion, evento.getNumValoraciones(), evento.getCalificacionMedia());
 							System.out.println(evento.getNumValoraciones());
 						} catch (RepositorioException | EntidadNoEncontrada e) {
-							System.out.println("aa");
+							
 							e.printStackTrace();
 						}
     			        
@@ -123,9 +160,9 @@ public class ServicioRestaurante implements IServicioRestaurante {
 			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180");
 		}
 		
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		String idGestor = authentication.getName();	
-		return repositorioRestaurante.create(nombre, latitud, longitud, null);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String idGestor = authentication.getName();	
+		return repositorioRestaurante.create(nombre, latitud, longitud, idGestor);
 	
         
     }

@@ -11,6 +11,7 @@ using Opinion.Repositorio;
 using Opinion.Evento;
 
 
+
 namespace Opinion.Servicio
 {
     public interface IServicioOpinion
@@ -49,6 +50,7 @@ namespace Opinion.Servicio
                 opinion.Valoraciones.RemoveAll(v => v.CorreoElectronico.Equals(valoracion.CorreoElectronico));
                 opinion.AddValoracion(valoracion);
                 _repositorioOpinion.AddValoracion(idOpinion, valoracion);
+                _repositorioOpinion.Update(opinion);
 
                 // Notificar evento reserva creada
                         

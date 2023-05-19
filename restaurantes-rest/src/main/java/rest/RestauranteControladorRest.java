@@ -75,7 +75,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_CREATED, message = "Restaurante creado correctamente"),
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta")
     })
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON) 
     // curl -i -X POST -H "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8080/api/restaurantes
     // curl -i -X POST -H "Authorization: Bearer <token>" "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8090/api/restaurantes
     public Response crearRestaurante(SolicitudRestaurante nuevoRestaurante) throws Exception {
@@ -259,7 +259,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Listado de restaurantes generado correctamente")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes
-    // curl -i -X GET -H "Authorization: Bearer <token>" http://localhost:8090/restaurantes
+    // curl -i -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzMGM5MTQ3OS03Njg1LTQ4NDYtODRlYy03YzRiNDI2NDUxZGQiLCJpc3MiOiJQYXNhcmVsYSBadXVsIiwiZXhwIjoxNjg0NTgzOTU2LCJzdWIiOiJTckthaXNlciIsInVzdWFyaW8iOiJjZXNhci5wYWdhbnZpbGxhZmFuZUBnbWFpbC5jb20iLCJyb2wiOiJHRVNUT1IifQ.yrcnkQGhN4PkwBtlIWlA5oHU3dGn-RF_MBKHIY4bCD4" http://localhost:8090/restaurantes
     public Response listarRestaurantes() throws Exception {
         List<ResumenRestaurante> restaurantesList = servicioRestaurante.recuperarTodosRestaurantes();
         

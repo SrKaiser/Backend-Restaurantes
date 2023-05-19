@@ -63,6 +63,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 				.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("nombre", nombre),
 						Updates.set("latitud", latitud), Updates.set("longitud", longitud)))
 				.getModifiedCount();
+		
 		if (updatedCount == 0) {
 			throw new EntidadNoEncontrada(idRestaurante + " no existe en la base de datos");
 		}
@@ -373,12 +374,14 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 		} catch (IllegalArgumentException e) {
 			throw new RepositorioException("El ID proporcionado no es válido", e);
 		}
+		System.out.println(idRestaurante);
 		long createdCount = restauranteCollection
 				.updateOne(Filters.eq("_id", objectId), Updates.combine(Updates.set("idOpinion", idOpinion),
 						Updates.set("numeroValoraciones", numValoraciones), Updates.set("calificacionMedia", calificacionMedia)))
 				.getModifiedCount();
+		
 		if (createdCount == 0) {
-			throw new EntidadNoEncontrada(idRestaurante + " no existe en la base de datos");
+			throw new RepositorioException("No hay información que actualizar");
 		}
 		return createdCount > 0;
 	}

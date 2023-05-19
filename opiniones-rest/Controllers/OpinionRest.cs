@@ -48,6 +48,8 @@ namespace OpinionApi.Controllers
             {
                 return NotFound();
             }
+
+            // return entidad.Valoraciones;
         
             var jsonValoraciones = JsonConvert.SerializeObject(entidad.Valoraciones);
             return jsonValoraciones;

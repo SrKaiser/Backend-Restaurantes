@@ -8,6 +8,15 @@ public class EventoNuevaValoracion {
 	private int numValoraciones;
 	private double calificacionMedia;
 	
+	public EventoNuevaValoracion(String idOpinion, Valoracion nuevaValoracion, int numValoraciones,
+			double calificacionMedia) {
+		super();
+		this.idOpinion = idOpinion;
+		this.nuevaValoracion = nuevaValoracion;
+		this.numValoraciones = numValoraciones;
+		this.calificacionMedia = calificacionMedia;
+	}
+
 	public String getIdOpinion() {
 		return idOpinion;
 	}

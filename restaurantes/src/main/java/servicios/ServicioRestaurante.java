@@ -13,9 +13,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -166,7 +163,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     }
 
 	@Override
-	public String altaRestaurante(String nombre, double latitud, double longitud) throws RepositorioException {
+	public String altaRestaurante(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException {
 		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre no puede ser null o vacío");
 		}
@@ -177,8 +174,6 @@ public class ServicioRestaurante implements IServicioRestaurante {
 			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180");
 		}
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String idGestor = authentication.getName();
 		return repositorioRestaurante.create(nombre, latitud, longitud, idGestor);
 
 	}

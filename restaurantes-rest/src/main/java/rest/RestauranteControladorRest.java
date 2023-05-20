@@ -62,7 +62,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    // curl -i -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0M2U5YTE0ZS01YTVlLTQ1MDUtODZkNi01YTY4MmE1ZWZkYjYiLCJpc3MiOiJQYXNhcmVsYSBadXVsIiwiZXhwIjoxNjg0NTA1MjM2LCJzdWIiOiJTckthaXNlciIsInVzdWFyaW8iOiJjZXNhci5wYWdhbnZpbGxhZmFuZUBnbWFpbC5jb20iLCJyb2wiOiJHRVNUT1IifQ.pZFcc48-4oe6eVmYYq4nKuTMJ7ZpfX679EwV96a5Y54" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE
+    // curl -i -X POST -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"NuevoNombre\", \"latitud\": 40.123456, \"longitud\": -3.654321}" http://localhost:8090/restaurantes
     public Response obtenerRestaurante(@ApiParam(value = "ID del restaurante a recuperar", required = true) @PathParam("id") String id) throws Exception {
         return Response.status(Response.Status.OK).entity(servicioRestaurante.recuperarRestaurante(id)).build();
     }
@@ -77,27 +77,30 @@ public class RestauranteControladorRest {
     })
     @Consumes(MediaType.APPLICATION_JSON) 
     // curl -i -X POST -H "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8080/api/restaurantes
-    // curl -i -X POST -H "Authorization: Bearer <token>" "Content-Type: application/json" -d "{\"nombre\": \"Goiko\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8090/api/restaurantes
+    // curl -i -X POST -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"NuevoNombre\", \"latitud\": 40.123456, \"longitud\": -3.654321}" http://localhost:8090/restaurantes
     public Response crearRestaurante(SolicitudRestaurante nuevoRestaurante) throws Exception {
     	String nombre = nuevoRestaurante.getNombre();
         double latitud = nuevoRestaurante.getLatitud();
         double longitud = nuevoRestaurante.getLongitud();
     	
-        String id = servicioRestaurante.altaRestaurante(nombre, latitud, longitud);
-   
-        if(id == null) {
+        String idGestor;
+        if (this.securityContext.getUserPrincipal() == null)
+        	idGestor = null;
+        else idGestor = this.securityContext.getUserPrincipal().getName();
+        String id;
+        try {
+            id = servicioRestaurante.altaRestaurante(nombre, latitud, longitud, idGestor);
+        } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Solicitud incorrecta").build();
         }
-        else {
-//        	// "X-Forwarded-Host" contiene la URL original de la pasarela
-//            String pasarelaUrl = request.getHeader("X-Forwarded-Host");
-//
-//            // URL del nuevo restaurante utilizando la URL de la pasarela
-//            String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
-//
-//            return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
-        	return Response.status(Response.Status.CREATED).entity(id).build();
-        }
+       
+    	// "X-Forwarded-Host" contiene la URL original de la pasarela
+        String pasarelaUrl = request.getHeader("X-Forwarded-Host");
+
+        // URL del nuevo restaurante utilizando la URL de la pasarela
+        String restauranteUrl = "http://" + pasarelaUrl + "/restaurantes/" + id;
+
+        return Response.status(Response.Status.CREATED).entity(restauranteUrl).build();
     }
     
     @PUT
@@ -110,7 +113,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/update-restaurante
+    // curl -i -X PUT -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"Burger\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/update-restaurante
     public Response updateRestaurante(
         @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
         SolicitudRestaurante actualizacionRestaurante) throws Exception {
@@ -137,6 +141,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
+    // curl -i -X GET -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
     public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante) throws Exception {
         
     	System.out.println(idRestaurante);
@@ -180,6 +185,8 @@ public class RestauranteControladorRest {
     })
     @Consumes(MediaType.APPLICATION_JSON)
     // curl -i -X POST -H "Content-Type: application/json" -d '{"nombre": "Plato1", "descripcion": "Descripcion1", "precio": 10.0}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+    // curl -i -X POST -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"Descripcion1\", \"precio\": 10.0}" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+    // curl -i -X POST -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"Descripcion1\", \"precio\": 10.0}" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/platos
     public Response addPlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                              @ApiParam(value = "Plato a agregar", required = true) Plato plato) throws Exception {
         boolean resultado = servicioRestaurante.añadirPlato(idRestaurante, plato);
@@ -200,6 +207,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
+    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/6466e57672b4e20cddb3e8a3/platos/Plato1
     public Response removePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                                 @ApiParam(value = "Nombre del plato a eliminar", required = true) @PathParam("nombrePlato") String nombrePlato) throws Exception {
         
@@ -242,6 +250,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
+    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/6466e57672b4e20cddb3e8a3
     public Response borrarRestaurante(@ApiParam(value = "ID del restaurante a eliminar", required = true) @PathParam("id") String idRestaurante) throws Exception {
         boolean resultado = servicioRestaurante.borrarRestaurante(idRestaurante);
 

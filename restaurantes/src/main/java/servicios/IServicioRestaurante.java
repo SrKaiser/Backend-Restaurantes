@@ -12,7 +12,7 @@ import modelos.Valoracion;
 
 public interface IServicioRestaurante {
 	
-	String altaRestaurante(String nombre, double latitud, double longitud) throws RepositorioException;
+	String altaRestaurante(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException;
 	
 	boolean actualizarRestaurante(String id, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada;
 	

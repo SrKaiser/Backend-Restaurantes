@@ -1,7 +1,19 @@
 package servicios;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import modelos.Valoracion;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -20,31 +32,62 @@ public class ServicioOpinionesRetrofit implements IServicioOpiniones {
     }
 
     @Override
-    public Object registrarRecurso(String nombreRecurso) {    	
-        Call<Object> registrarRecursoCall = api.registrarRecurso(nombreRecurso);
-   
+    public String registrarRecurso(String nombreRecurso) {     
+        Call<ResponseBody> registrarRecursoCall = api.registrarRecurso(nombreRecurso);
+
         try {
-            Response<Object> response = registrarRecursoCall.execute();
+            Response<ResponseBody> response = registrarRecursoCall.execute();
             System.out.println(response.code());
-            System.out.println(response.body());
-            return response.body();
+            
+            String responseBody = response.body().string();
+            System.out.println(responseBody);
+
+            JsonReader jsonReader = Json.createReader(new StringReader(responseBody));
+            JsonObject jsonObject = jsonReader.readObject();
+            jsonReader.close();
+            
+            return jsonObject.getString("id");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-
     }
 
     @Override
-    public String obtenerValoraciones(String idOpinion) {
-    	
-    	Call<String> obtenerValoracionesCall = api.obtenerValoraciones(idOpinion);
-    	   
+    public List<Valoracion> obtenerValoraciones(String idOpinion) {
+        
+        Call<ResponseBody> obtenerValoracionesCall = api.obtenerValoraciones(idOpinion);
+        
         try {
-            Response<String> response = obtenerValoracionesCall.execute();
+            Response<ResponseBody> response = obtenerValoracionesCall.execute();
             System.out.println(response.code());
-            System.out.println(response.body());
-            return response.body();
+            
+            String responseBody = response.body().string();
+            System.out.println(responseBody);
+            
+            JsonReader jsonReader = Json.createReader(new StringReader(responseBody));
+            JsonArray jsonArray = jsonReader.readArray();
+            jsonReader.close();
+            
+            List<Valoracion> valoraciones = new ArrayList<>();
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject jsonObject = jsonArray.getJsonObject(i);
+                Valoracion valoracion = new Valoracion();
+
+                valoracion.setCorreoElectronico(jsonObject.getString("correoElectronico"));
+                
+                String fechaStr = jsonObject.getString("fecha");
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                LocalDateTime fecha = LocalDateTime.parse(fechaStr, formatter);
+                valoracion.setFecha(fecha);
+                
+                valoracion.setCalificacion(jsonObject.getInt("calificacion"));
+                
+                valoracion.setComentario(jsonObject.getString("comentario"));
+
+                valoraciones.add(valoracion);
+            }
+            return valoraciones;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

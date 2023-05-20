@@ -275,7 +275,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -i -X PUT -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/activar-opiniones
+    // curl -i -X PUT -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/6467e274cb511163e88ce329/activar-opiniones
     public Response activarOpiniones(
         @ApiParam(value = "ID del restaurante para activar opiniones", required = true) @PathParam("id") String id) throws Exception {
 
@@ -298,7 +298,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Solicitud incorrecta"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/646647a7b74fb24a2063466d/valoraciones
+    // curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/6466e57672b4e20cddb3e8a3/valoraciones
     public Response recuperarTodasValoraciones(
         @ApiParam(value = "ID del restaurante para recuperar valoraciones", required = true) @PathParam("id") String id) throws Exception {
       

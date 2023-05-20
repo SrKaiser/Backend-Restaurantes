@@ -35,6 +35,10 @@ public interface IServicioRestaurante {
 	String activarOpiniones(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 
 	List<Valoracion> recuperarTodasValoraciones(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
+
+	void suscribirseACola();
+
+	void cerrarConexion();
 	
 	
 }

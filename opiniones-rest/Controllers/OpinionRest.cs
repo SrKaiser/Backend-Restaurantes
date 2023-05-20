@@ -40,7 +40,7 @@ namespace OpinionApi.Controllers
 
         [HttpGet("{idOpinion}/valoraciones")]
         // curl -i -X GET https://localhost:7054/api/opiniones/{idOpinion}/valoraciones
-        public ActionResult<string> GetValoraciones(string idOpinion)
+        public ActionResult<List<Valoracion>> GetValoraciones(string idOpinion)
         {
             var entidad = _servicio.ObtenerOpinion(idOpinion);
 
@@ -49,21 +49,16 @@ namespace OpinionApi.Controllers
                 return NotFound();
             }
 
-            // return entidad.Valoraciones;
-        
-            var jsonValoraciones = JsonConvert.SerializeObject(entidad.Valoraciones);
-            return jsonValoraciones;
+            return entidad.Valoraciones;
         }
 
 
         [HttpPost("registrarRecurso/{nombreRecurso}")]
         // curl -i -X POST https://localhost:7054/api/opiniones/registrarRecurso/{nombreRecurso}
-        public ActionResult<Object> Create([FromRoute] string nombreRecurso)
+        public ActionResult<string> Create([FromRoute] string nombreRecurso)
         {
             string id =  _servicio.RegistrarRecurso(nombreRecurso);
-            return new {id};
-
-            //return CreatedAtRoute("GetOpinion", new { nombreRecurso = nombreRecurso });
+            return CreatedAtRoute("GetOpinion", new { id = id }, new { id = id });
         }
 
         [HttpPost("{idOpinion}/addValoracion")]

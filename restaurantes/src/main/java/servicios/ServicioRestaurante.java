@@ -163,7 +163,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
     }
 
 	@Override
-	public String altaRestaurante(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException {
+	public String altaRestaurante(String nombre, double latitud, double longitud, String idGestor) {
 		if (nombre == null || nombre.trim().isEmpty()) {
 			throw new IllegalArgumentException("El nombre no puede ser null o vacío");
 		}
@@ -220,13 +220,13 @@ public class ServicioRestaurante implements IServicioRestaurante {
 	@Override
 	public boolean añadirPlato(String idRestaurante, Plato plato) throws RepositorioException, EntidadNoEncontrada {
 		if (plato.getNombre() == null || plato.getNombre().trim().isEmpty()) {
-			throw new RepositorioException("El nombre del plato no puede ser null o vacío");
+			throw new IllegalArgumentException("El nombre del plato no puede ser null o vacío");
 		}
 		if (plato.getDescripcion() == null || plato.getDescripcion().trim().isEmpty()) {
-			throw new RepositorioException("La descripción del plato no puede ser null o vacía");
+			throw new IllegalArgumentException("La descripción del plato no puede ser null o vacía");
 		}
 		if (plato.getPrecio() <= 0) {
-			throw new RepositorioException("El precio del plato debe ser mayor que 0");
+			throw new IllegalArgumentException("El precio del plato debe ser mayor que 0");
 		}
 
 		return repositorioRestaurante.addPlato(idRestaurante, plato);
@@ -268,7 +268,7 @@ public class ServicioRestaurante implements IServicioRestaurante {
 	}
 
 	@Override
-	public List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException {
+	public List<ResumenRestaurante> recuperarTodosRestaurantes(){
 		return repositorioRestaurante.findAll();
 	}
 

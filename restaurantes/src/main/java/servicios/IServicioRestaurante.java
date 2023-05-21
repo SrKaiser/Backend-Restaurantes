@@ -12,7 +12,7 @@ import modelos.Valoracion;
 
 public interface IServicioRestaurante {
 	
-	String altaRestaurante(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException;
+	String altaRestaurante(String nombre, double latitud, double longitud, String idGestor);
 	
 	boolean actualizarRestaurante(String id, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada;
 	
@@ -30,7 +30,7 @@ public interface IServicioRestaurante {
 	
 	boolean borrarRestaurante(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 	
-	List<ResumenRestaurante> recuperarTodosRestaurantes() throws RepositorioException;
+	List<ResumenRestaurante> recuperarTodosRestaurantes();
 	
 	String activarOpiniones(String idRestaurante) throws RepositorioException, EntidadNoEncontrada;
 

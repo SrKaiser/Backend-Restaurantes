@@ -11,11 +11,11 @@ import modelos.SitioTuristico;
 
 public interface IRepositorioRestaurante{
 	
-	String create(String nombre, double latitud, double longitud, String gestorId) throws RepositorioException;
+	String create(String nombre, double latitud, double longitud, String gestorId);
     
 	Restaurante findById(String id) throws RepositorioException, EntidadNoEncontrada;
     
-	List<ResumenRestaurante> findAll() throws RepositorioException;
+	List<ResumenRestaurante> findAll();
     
 	boolean update(String idRestaurante, String nombre, double latitud, double longitud) throws RepositorioException, EntidadNoEncontrada;
     

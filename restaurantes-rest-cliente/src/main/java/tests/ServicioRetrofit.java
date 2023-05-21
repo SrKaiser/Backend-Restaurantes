@@ -63,15 +63,19 @@ public class ServicioRetrofit {
 		return null;
 	}
 
-	public void updateRestaurante(String idRestaurante, SolicitudRestaurante restauranteActualizado) {
+	public boolean updateRestaurante(String idRestaurante, SolicitudRestaurante restauranteActualizado) {
 		Call<Boolean> updateRestauranteCall = api.updateRestaurante(idRestaurante, restauranteActualizado);
 
 		try {
 			Response<Boolean> response = updateRestauranteCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -94,7 +98,7 @@ public class ServicioRetrofit {
 		}
 	}
 
-	public void setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicosDestacados) {
+	public boolean setSitiosTuristicosDestacados(String idRestaurante, List<SitioTuristico> sitiosTuristicosDestacados) {
 		Call<Boolean> setSitiosTuristicosDestacadosCall = api.setSitiosTuristicosDestacados(idRestaurante,
 				sitiosTuristicosDestacados);
 
@@ -102,56 +106,76 @@ public class ServicioRetrofit {
 			Response<Boolean> response = setSitiosTuristicosDestacadosCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public void addPlato(String idRestaurante, Plato plato) {
+	public boolean addPlato(String idRestaurante, Plato plato) {
 		Call<Boolean> addPlatoCall = api.addPlato(idRestaurante, plato);
 
 		try {
 			Response<Boolean> response = addPlatoCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public void removePlato(String idRestaurante, String nombre) {
+	public boolean removePlato(String idRestaurante, String nombre) {
 		Call<Boolean> removePlatoCall = api.removePlato(idRestaurante, nombre);
 
 		try {
 			Response<Boolean> response = removePlatoCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public void updatePlato(String idRestaurante, Plato platoActualizado) {
+	public boolean updatePlato(String idRestaurante, Plato platoActualizado) {
 		Call<Boolean> updatePlatoCall = api.updatePlato(idRestaurante, platoActualizado);
 
 		try {
 			Response<Boolean> response = updatePlatoCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public void borrarRestaurante(String idRestaurante) {
+	public boolean borrarRestaurante(String idRestaurante) {
 		Call<Boolean> borrarRestauranteCall = api.borrarRestaurante(idRestaurante);
 
 		try {
 			Response<Boolean> response = borrarRestauranteCall.execute();
 			System.out.println(response.code());
 			System.out.println(response.body());
+			if (response.body() == null)
+				return false;
+			else return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 

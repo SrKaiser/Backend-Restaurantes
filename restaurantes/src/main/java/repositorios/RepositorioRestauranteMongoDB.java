@@ -40,7 +40,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 	}
 
 	@Override
-	public String create(String nombre, double latitud, double longitud, String idGestor) throws RepositorioException {
+	public String create(String nombre, double latitud, double longitud, String idGestor) {
 		Document doc = new Document("nombre", nombre).append("latitud", latitud).append("longitud", longitud)
 				.append("idGestor", idGestor);
 		restauranteCollection.insertOne(doc);
@@ -338,7 +338,7 @@ public class RepositorioRestauranteMongoDB implements IRepositorioRestaurante {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<ResumenRestaurante> findAll() throws RepositorioException {
+	public List<ResumenRestaurante> findAll()  {
 		List<ResumenRestaurante> restaurantesList = new ArrayList<>();
 		try (MongoCursor<Document> cursor = restauranteCollection.find().iterator()) {
 			while (cursor.hasNext()) {

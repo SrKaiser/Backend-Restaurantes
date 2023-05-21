@@ -46,7 +46,7 @@ public class AuthorizationFilter implements ContainerRequestFilter, ResourceFilt
 	public ContainerRequest filter(ContainerRequest request) {		
 		
 		// Comprueba la variable de entorno DISABLE_SECURITY
-	    boolean disableSecurity = false;
+	    boolean disableSecurity = true;
 	    
 	    if (disableSecurity) {
 	        // Usa un contexto de seguridad ficticio

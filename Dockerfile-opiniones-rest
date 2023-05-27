@@ -3,9 +3,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 
 
 WORKDIR /app
-COPY *.csproj ./
+COPY ./opiniones-rest/*.csproj ./
 RUN dotnet restore
-COPY . ./
+COPY ./opiniones-rest/ ./
 RUN dotnet publish -c Release -o out
 
 # Generar imagen para ejecutar la aplicación

@@ -7,29 +7,24 @@ services:
     ports:
       - 8090:8090
     environment:
-      - zuul.routes.restaurantes.url=http://restaurantes:8080
+      - zuul.routes.restaurantes.url=http://restaurantes-rest:8080
       - zuul.routes.opiniones.url=http://opiniones-rest:5193
 
   restaurantes-rest:
     build:
       context: .
-      dockerfile: Dockerfile-restaurante
+      dockerfile: Dockerfile-restaurantes-rest
     ports:
       - 8080:8080
-    environment:
-      - MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"
+    #environment:
+      #- MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"
 
   opiniones-rest:
     build:
-      context: ./opiniones-rest
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-opiniones-rest
     ports:
       - 5193:5193
       - 7054:7054
-    environment:
-      - MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"
-
-networks:
-  default:
-    external: true
-    name: mynetwork
+    #environment:
+      #- MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"

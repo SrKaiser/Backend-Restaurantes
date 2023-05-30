@@ -7,8 +7,8 @@ services:
     ports:
       - 8090:8090
     environment:
-      - zuul.routes.restaurantes.url=http://restaurantes-rest:8080
-      - zuul.routes.opiniones.url=http://opiniones-rest:5193
+      - zuul.routes.restaurantes.url=http://restaurantes-rest:8080/api/restaurantes
+      - zuul.routes.opiniones.url=http://opiniones-rest:5193/api/opiniones
 
   restaurantes-rest:
     build:

@@ -58,7 +58,7 @@ namespace OpinionApi.Controllers
         public ActionResult<string> Create([FromRoute] string nombreRecurso)
         {
             string id =  _servicio.RegistrarRecurso(nombreRecurso);
-            return CreatedAtRoute("GetOpinion", new { id = id }, new { id = id });
+            return CreatedAtRoute("GetOpinion", new { idOpinion = id }, new { id = id });
         }
 
         [HttpPost("{idOpinion}/addValoracion")]

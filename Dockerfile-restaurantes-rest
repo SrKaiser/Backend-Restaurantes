@@ -1,5 +1,5 @@
 # Imagen base
-FROM maven:3.8.1-jdk-11 as build
+FROM maven:3.8.1-jdk-11 AS build
 
 WORKDIR /app-base/
 COPY restaurantes/pom.xml .

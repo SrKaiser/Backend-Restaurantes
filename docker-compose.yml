@@ -16,8 +16,6 @@ services:
       dockerfile: Dockerfile-restaurantes-rest
     ports:
       - 8080:8080
-    #environment:
-      #- MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"
 
   opiniones-rest:
     build:
@@ -26,5 +24,15 @@ services:
     ports:
       - 5193:5193
       - 7054:7054
-    #environment:
-      #- MONGODB_CONNECTION_STRING="mongodb://arso:arso@ac-v8ez3vj-shard-00-00.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-01.kzwz6ia.mongodb.net:27017,ac-v8ez3vj-shard-00-02.kzwz6ia.mongodb.net:27017/?ssl=true&replicaSet=atlas-b3t6zg-shard-0&authSource=admin&retryWrites=true&w=majority"
+    environment:
+      - MONGODB_CONNECTION_STRING=mongodb://mongo:27017
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongodb_data_container:/data/db
+    ports:
+      - 27017:27017
+      
+volumes:
+  mongodb_data_container:

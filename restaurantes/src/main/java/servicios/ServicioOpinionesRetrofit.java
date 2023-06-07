@@ -2,8 +2,6 @@ package servicios;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,9 +75,7 @@ public class ServicioOpinionesRetrofit implements IServicioOpiniones {
                 valoracion.setCorreoElectronico(jsonObject.getString("correoElectronico"));
                 
                 String fechaStr = jsonObject.getString("fecha");
-                DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-                LocalDateTime fecha = LocalDateTime.parse(fechaStr, formatter);
-                valoracion.setFecha(fecha);
+                valoracion.setFecha(fechaStr);
                 
                 valoracion.setCalificacion(jsonObject.getInt("calificacion"));
                 

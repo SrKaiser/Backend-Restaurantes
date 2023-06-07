@@ -2,9 +2,6 @@ package servicios;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -110,19 +107,10 @@ public class ServicioRestaurante implements IServicioRestaurante {
 							JsonObject valoracionObj = obj.getJsonObject("NuevaValoracion");
 							String correoElectronico = valoracionObj.getString("CorreoElectronico");
 							String fechaStr = valoracionObj.getString("Fecha");
-							LocalDateTime fecha;
-							try {
-								DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-								fecha = LocalDateTime.parse(fechaStr, formatter);
-							} catch (DateTimeParseException e) {
-								DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-								fecha = LocalDateTime.parse(fechaStr, formatter);
-							}
-
 							int calificacion = valoracionObj.getInt("Calificacion");
 							String comentario = valoracionObj.getString("Comentario");
 
-							Valoracion valoracion = new Valoracion(correoElectronico, fecha, calificacion, comentario);
+							Valoracion valoracion = new Valoracion(correoElectronico, fechaStr, calificacion, comentario);
 
 							EventoNuevaValoracion evento = new EventoNuevaValoracion(idOpinion, valoracion,
 									numValoraciones, calificacionMedia);

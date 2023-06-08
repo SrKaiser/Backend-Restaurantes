@@ -8,8 +8,12 @@ import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -46,6 +50,8 @@ public class ServicioSitiosTuristicos {
 					JsonObject abstractObject = array.getJsonObject(0);
 					value = abstractObject.getString("value");
 					s.setResumen(value);
+				} else {
+					s.setResumen("");
 				}
 				
 				array = resourceObject.getJsonArray("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
@@ -54,7 +60,7 @@ public class ServicioSitiosTuristicos {
 						value = categoria.getString("value");
 						s.addCategoria(value);
 					}
-				}
+				} 
 
 				array = resourceObject.getJsonArray("http://dbpedia.org/ontology/wikiPageExternalLink");
 				if (array != null) {
@@ -66,11 +72,18 @@ public class ServicioSitiosTuristicos {
 				
 				array = resourceObject.getJsonArray("http://es.dbpedia.org/property/imagen");
 				if (array != null) {
-					for (JsonObject imagen : array.getValuesAs(JsonObject.class)) {
-						value = imagen.getString("value");
-						s.addImagen(value);
-					}
+				    for (JsonValue imagen : array) {
+				        if (imagen.getValueType() == ValueType.STRING) {
+				            value = ((JsonString) imagen).getString();
+				        } else if (imagen.getValueType() == ValueType.NUMBER) {
+				            value = ((JsonNumber) imagen).toString();
+				        } else {
+				            continue; 
+				        }
+				        s.addImagen(value);
+				    }
 				}
+
 				
 				sitios.add(s);
 				

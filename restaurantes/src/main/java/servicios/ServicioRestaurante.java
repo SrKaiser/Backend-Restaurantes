@@ -197,9 +197,6 @@ public class ServicioRestaurante implements IServicioRestaurante {
 			if (sitio.getTitulo() == null || sitio.getTitulo().trim().isEmpty()) {
 				throw new IllegalArgumentException("El título del sitio turístico no puede ser null o vacío");
 			}
-			if (sitio.getResumen() == null || sitio.getResumen().trim().isEmpty()) {
-				throw new IllegalArgumentException("El resumen del sitio turístico no puede ser null o vacío");
-			}
 		}
 
 		return repositorioRestaurante.setSitiosTuristicosDestacados(idRestaurante, sitiosTuristicos);

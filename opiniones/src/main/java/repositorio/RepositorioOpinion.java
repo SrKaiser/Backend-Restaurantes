@@ -1,7 +1,9 @@
 package repositorio;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.Document;
@@ -121,21 +123,34 @@ public class RepositorioOpinion implements IRepositorioOpinion {
 
 	@SuppressWarnings("unchecked")
 	private Opinion documentToOpinion(Document doc) {
-		Opinion opinion = new Opinion();
-		opinion.setId(doc.getObjectId("_id").toString());
-		opinion.setNombreRecurso(doc.getString("nombreRecurso"));
-		List<Valoracion> valoraciones = new ArrayList<>();
+	    Opinion opinion = new Opinion();
+	    opinion.setId(doc.getObjectId("_id").toString());
+	    opinion.setNombreRecurso(doc.getString("nombreRecurso"));
+	    List<Valoracion> valoraciones = new ArrayList<>();
 	    for (Document valoracionDoc : (List<Document>) doc.get("valoraciones")) {
-	    	LocalDateTime fecha = LocalDateTime.parse(valoracionDoc.getString("fecha"));
+	        Object fechaObj = valoracionDoc.get("fecha");
+	        String fecha;
+	        if (fechaObj instanceof Date) {
+	            LocalDateTime fechaDateTime = ((Date) fechaObj).toInstant()
+	                .atZone(ZoneId.systemDefault())
+	                .toLocalDateTime();
+	            fecha = fechaDateTime.toString();
+	        } else if (fechaObj instanceof String) {
+	            LocalDateTime f = LocalDateTime.parse((String) fechaObj);
+	            fecha = f.toString();
+	        } else {
+	            continue;  // Omitir esta iteración si no es Date o String
+	        }
 	        Valoracion valoracion = new Valoracion(
-	                valoracionDoc.getString("email"),
-	                valoracionDoc.getInteger("calificacion"),
-	                valoracionDoc.getString("comentario")
+	            valoracionDoc.getString("email"),
+	            valoracionDoc.getInteger("calificacion"),
+	            valoracionDoc.getString("comentario")
 	        );
 	        valoracion.setFecha(fecha);
 	        valoraciones.add(valoracion);
 	    }
 	    opinion.setValoraciones(valoraciones);
-		return opinion;
+	    return opinion;
 	}
+
 }

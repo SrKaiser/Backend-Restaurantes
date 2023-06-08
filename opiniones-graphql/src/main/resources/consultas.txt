@@ -3,7 +3,7 @@ mutation {
 }
 
 mutation {
-  anadirValoracion(id: "6453f684881e7205e10db69b", valoracion: {
+  anadirValoracion(id: "64818c6a7c16cf45ecbbcf6b", valoracion: {
     correoElectronico: "usuario@example.com",
     calificacion: 4,
     comentario: "Un recurso interesante"
@@ -11,11 +11,11 @@ mutation {
 }
 
 mutation {
-  eliminarOpinion(id: "6453f0b3a83f3a6a2c1e49ea")
+  eliminarOpinion(id: "64818c14fbd75258d30cca94")
 }
 
 query {
-  obtenerOpinion(id: "6453f0b3a83f3a6a2c1e49ea") {
+  obtenerOpinion(id: "64818c6a7c16cf45ecbbcf6b") {
     id
     nombreRecurso
     numeroValoraciones

@@ -64,7 +64,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "ID no válido")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    // curl -i -X POST -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"NuevoNombre\", \"latitud\": 40.123456, \"longitud\": -3.654321}" http://localhost:8090/restaurantes
+    // curl -i -X GET -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE
     public Response obtenerRestaurante(@ApiParam(value = "ID del restaurante a recuperar", required = true) @PathParam("id") String id) {
         try {
 			return Response.status(Response.Status.OK).entity(servicioRestaurante.recuperarRestaurante(id)).build();
@@ -121,7 +121,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "NuevoNombre", "latitud": 40.123456, "longitud": -3.654321}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/update-restaurante
+    // curl -i -X PUT -H "Content-Type: application/json" -d "{\"nombre\": \"Burger\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/update-restaurante
     // curl -i -X PUT -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"Burger\", \"latitud\": 40.42039145624014, \"longitud\": -3.6996503622016954}" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/update-restaurante
     public Response updateRestaurante(
         @ApiParam(value = "ID del restaurante a actualizar", required = true) @PathParam("id") String id,
@@ -154,12 +154,12 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "ID no válido")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos?radius=VALOR_RADIO&maxRows=VALOR_MAXROWS
-    // curl -i -X GET -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
-    public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante,  @QueryParam("radio") Integer radio, @QueryParam("maxRows") Integer maxRows) {
+    // curl -i -X GET -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos?radius=VALOR_RADIO&maxRows=VALOR_MAXROWS
+    public Response obtenerSitiosTuristicosCercanos(@ApiParam(value = "ID del restaurante para buscar sitios turísticos cercanos", required = true) @PathParam("id") String idRestaurante,  @QueryParam("radius") Integer radius, @QueryParam("maxRows") Integer maxRows) {
         
     	List<SitioTuristico> sitiosTuristicos;
 		try {
-			sitiosTuristicos = servicioRestaurante.obtenerSitiosTuristicosProximos(idRestaurante, radio, maxRows);
+			sitiosTuristicos = servicioRestaurante.obtenerSitiosTuristicosProximos(idRestaurante, radius, maxRows);
 			 return Response.ok(sitiosTuristicos).build();
 		} catch (RepositorioException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("ID no válido").build();
@@ -180,6 +180,7 @@ public class RestauranteControladorRest {
     })
     @Consumes(MediaType.APPLICATION_JSON)
     // curl -i -X PUT -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
+    // curl -i -X PUT  -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d '[{"titulo": "Titulo1", "resumen": "Resumen1", "categorias": ["Categoria1"], "enlaces": ["Enlace1"], "imagenes": ["Imagen1"]}]' http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/sitios-turisticos
     public Response setSitiosTuristicosDestacados(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                                                   @ApiParam(value = "Lista de sitios turísticos destacados", required = true) List<SitioTuristico> sitiosTuristicos) {
         
@@ -204,7 +205,6 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Parámetros no válidos")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -i -X POST -H "Content-Type: application/json" -d '{"nombre": "Plato1", "descripcion": "Descripcion1", "precio": 10.0}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
     // curl -i -X POST -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"Descripcion1\", \"precio\": 10.0}" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
     // curl -i -X POST -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"Descripcion1\", \"precio\": 10.0}" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/platos
     public Response addPlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
@@ -232,7 +232,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Parámetros no válidos")
     })
     // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
-    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/6466e57672b4e20cddb3e8a3/platos/Plato1
+    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/platos/NOMBRE_DEL_PLATO
     public Response removePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                                 @ApiParam(value = "Nombre del plato a eliminar", required = true) @PathParam("nombrePlato") String nombrePlato) {
         
@@ -259,7 +259,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Parámetros no válidos")
     })
     @Consumes(MediaType.APPLICATION_JSON)
-    // curl -i -X PUT -H "Content-Type: application/json" -d '{"nombre": "nombre", "descripcion": "NuevaDescripcion", "precio": NuevoPrecio}' http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/platos
+    // curl -i -X PUT -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"NuevaDescripcion\", \"precio\": 10.0}" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/update-plato
+    // curl -i -X PUT -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" -d "{\"nombre\": \"Plato1\", \"descripcion\": \"NuevaDescripcion\", \"precio\": 10.0}" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/update-plato
     public Response updatePlato(@ApiParam(value = "ID del restaurante", required = true) @PathParam("id") String idRestaurante,
                                 Plato plato) {
         boolean resultado;
@@ -286,7 +287,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "ID no válido")
     })
     // curl -i -X DELETE http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE
-    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/6466e57672b4e20cddb3e8a3
+    // curl -i -X DELETE -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE
     public Response borrarRestaurante(@ApiParam(value = "ID del restaurante a eliminar", required = true) @PathParam("id") String idRestaurante) {
         
     	boolean resultado;
@@ -308,7 +309,7 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_OK, message = "Listado de restaurantes generado correctamente")
     })
     // curl -i -X GET http://localhost:8080/api/restaurantes
-    // curl -i -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzMGM5MTQ3OS03Njg1LTQ4NDYtODRlYy03YzRiNDI2NDUxZGQiLCJpc3MiOiJQYXNhcmVsYSBadXVsIiwiZXhwIjoxNjg0NTgzOTU2LCJzdWIiOiJTckthaXNlciIsInVzdWFyaW8iOiJjZXNhci5wYWdhbnZpbGxhZmFuZUBnbWFpbC5jb20iLCJyb2wiOiJHRVNUT1IifQ.yrcnkQGhN4PkwBtlIWlA5oHU3dGn-RF_MBKHIY4bCD4" http://localhost:8090/restaurantes
+    // curl -i -X GET -H "Authorization: Bearer %JWT%" http://localhost:8090/restaurantes
     public Response listarRestaurantes() {
         List<ResumenRestaurante> restaurantesList = servicioRestaurante.recuperarTodosRestaurantes();
         
@@ -324,7 +325,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "ID no válido"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -i -X PUT -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/6467e274cb511163e88ce329/activar-opiniones
+    // curl -i -X PUT -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/activar-opiniones
+    // curl -i -X PUT -H "Authorization: Bearer %JWT%" -H "Content-Type: application/json" http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/activar-opiniones
     public Response activarOpiniones(
         @ApiParam(value = "ID del restaurante para activar opiniones", required = true) @PathParam("id") String id)  {
 
@@ -349,7 +351,8 @@ public class RestauranteControladorRest {
         @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "ID no válido"),
         @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Restaurante no encontrado")
     })
-    // curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/restaurantes/6466e57672b4e20cddb3e8a3/valoraciones
+    // curl -i -X GET http://localhost:8080/api/restaurantes/ID_DEL_RESTAURANTE/valoraciones
+	// curl -i -X GET -H "Authorization: Bearer %JWT%" -H  http://localhost:8090/restaurantes/ID_DEL_RESTAURANTE/valoraciones
     public Response recuperarTodasValoraciones(
         @ApiParam(value = "ID del restaurante para recuperar valoraciones", required = true) @PathParam("id") String id) {
       

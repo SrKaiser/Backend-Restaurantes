@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongodb
+  name: mongo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: mongo
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongo
     spec:
       containers:
-      - name: mongodb
+      - name: mongo
         image: mongo:4.2
         ports:
         - containerPort: 27017
@@ -28,10 +28,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb
+  name: mongo
+  labels:
+    app: mongo
 spec:
+  ports:
+    - port: 27017
+      name: mongo
   selector:
-    app: mongodb
+    app: mongo
   ports:
       - protocol: TCP
         port: 27017

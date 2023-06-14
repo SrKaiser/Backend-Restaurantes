@@ -22,7 +22,7 @@ public class ServicioOpinionesRetrofit implements IServicioOpiniones {
 
     public ServicioOpinionesRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:5193/api/")
+                .baseUrl("http://opiniones-rest:5193/api/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
 
